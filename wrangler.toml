@@ -1,0 +1,18 @@
+name = "clh365"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+# Serve everything in ./public as static assets.
+# html_handling = "none" keeps .html in the URL (e.g. /lesson-1.html),
+# and means a request to "/" has no matching asset, so it falls through
+# to the Worker below, which renders the auto-generated index.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+html_handling = "none"
+not_found_handling = "404-page"
+
+# Regenerate src/manifest.js from the contents of ./public before every
+# build/deploy, so the index always reflects the files actually present.
+[build]
+command = "node build-index.js"
