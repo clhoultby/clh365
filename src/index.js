@@ -73,7 +73,10 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/") {
       return new Response(renderIndex(), {
-        headers: { "content-type": "text/html; charset=utf-8" },
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+        },
       });
     }
     // Non-root requests that reached the Worker are asset misses;
