@@ -23,7 +23,7 @@
   <p class="crumb">Core JavaScript &middot; 1 of 9</p>
   <h1>Module Scope</h1>
 
-  <p>Inside a namespace, "private" was a convention, not a rule enforced by the language: leading underscores, or code left un-exported. Nothing stopped another file from reaching in — namespace members were really just properties on an object.</p>
+  <p>A namespace is just an object, and its members are properties — reachable from anywhere the namespace itself is visible. The language draws no boundary around what's meant to stay internal; that's left entirely to convention.</p>
 
   <h2>The old way</h2>
   <pre><code>export class OrderService {
@@ -37,9 +37,11 @@
   }
 }</code></pre>
 
+  <h2>The new way</h2>
   <p>An ES module enforces the same idea for real. Anything you don't <code>export</code> simply does not exist outside the file</p>
 
   <pre><code>// order-service.js
+
 const calculateTax = (amount) => {
   return amount * 0.2;
 };
@@ -47,6 +49,8 @@ const calculateTax = (amount) => {
 export const total = (amount) => {
   return amount + calculateTax(amount);
 };
+
+
 
 // another-file.js
 import { calculateTax } from "./order-service.js";
