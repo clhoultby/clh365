@@ -2,15 +2,20 @@ name = "clh365"
 main = "src/index.js"
 compatibility_date = "2026-07-01"
 
-# Serve everything in ./public as static assets.
-# html_handling = "none" keeps .html in the URL (e.g. /lesson-1.html),
-# and means a request to "/" has no matching asset, so it falls through
-# to the Worker below, which renders the auto-generated index.
+# Serve everything in ./public as static assets. run_worker_first means
+# every request -- including asset hits and misses -- goes through the
+# Worker first (src/index.js), which:
+#   - renders the auto-generated index for "/"
+#   - falls back to that same index (with a 404 status) for any path
+#     with no matching asset
+# not_found_handling = "none" because the Worker handles the 404 case
+# itself; html_handling = "none" keeps .html in the URL (e.g.
+# /core-javascript/01-....html) instead of extension-less routes.
 [assets]
 directory = "./public"
 binding = "ASSETS"
 html_handling = "none"
-not_found_handling = "404-page"
+not_found_handling = "none"
 run_worker_first = true
 
 # Regenerate src/manifest.js from the contents of ./public before every

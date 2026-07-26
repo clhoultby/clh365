@@ -79,8 +79,16 @@ export default {
         },
       });
     }
-    // Non-root requests that reached the Worker are asset misses;
-    // hand them back to the assets layer so not_found_handling (404.html) applies.
-    return env.ASSETS.fetch(request);
+    const assetResponse = await env.ASSETS.fetch(request);
+    if (assetResponse.status === 404) {
+      return new Response(renderIndex(), {
+        status: 404,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+        },
+      });
+    }
+    return assetResponse;
   },
 };
