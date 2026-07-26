@@ -7,43 +7,39 @@ export const paths = [
     "order": 1,
     "lessons": [
       {
-        "path": "core-javascript/01-es-modules-vs-namespaces.html",
-        "title": "ES Modules Replace Namespaces"
-      },
-      {
-        "path": "core-javascript/02-module-scope-encapsulation.html",
+        "path": "core-javascript/01-module-scope-encapsulation.html",
         "title": "Module Scope"
       },
       {
-        "path": "core-javascript/03-closures-instead-of-classes.html",
+        "path": "core-javascript/02-closures-instead-of-classes.html",
         "title": "Closures Instead of Classes"
       },
       {
-        "path": "core-javascript/04-replacing-static-members.html",
+        "path": "core-javascript/03-replacing-static-members.html",
         "title": "Replacing Static Members and Singletons"
       },
       {
-        "path": "core-javascript/05-functions-over-classes.html",
+        "path": "core-javascript/04-functions-over-classes.html",
         "title": "Functions Over Classes"
       },
       {
-        "path": "core-javascript/06-pure-functions-and-immutability.html",
+        "path": "core-javascript/05-pure-functions-and-immutability.html",
         "title": "Pure Functions and Immutability"
       },
       {
-        "path": "core-javascript/07-composition-over-inheritance.html",
+        "path": "core-javascript/06-composition-over-inheritance.html",
         "title": "Composition Over Inheritance"
       },
       {
-        "path": "core-javascript/08-dynamic-imports.html",
+        "path": "core-javascript/07-dynamic-imports.html",
         "title": "Dynamic import()"
       },
       {
-        "path": "core-javascript/09-case-study-refactor.html",
+        "path": "core-javascript/08-case-study-refactor.html",
         "title": "Case Study: Refactoring a Namespace Class"
       },
       {
-        "path": "core-javascript/10-named-default-and-re-exports.html",
+        "path": "core-javascript/09-named-default-and-re-exports.html",
         "title": "Named, Default, and Re-exports"
       }
     ]

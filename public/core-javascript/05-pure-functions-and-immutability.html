@@ -20,7 +20,7 @@
 </head>
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
-  <p class="crumb">Core JavaScript &middot; 6 of 10</p>
+  <p class="crumb">Core JavaScript &middot; 5 of 9</p>
   <h1>Pure Functions and Immutability</h1>
 
   <p>Classes make shared mutable state easy to reach for — a method can read <code>this.something</code> instead of taking it as a parameter:</p>
@@ -74,8 +74,8 @@ const discounted = addDiscount(items, 0.1);
   <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere, since nothing it touches can surprise another caller. The loop above never touches <code>items</code>; it pushes onto a fresh <code>result</code> array and returns that. A <code>for</code> loop is fine — the rule is build new data and return it, not avoid loops.</p>
 
   <nav class="pager">
-    <a href="/core-javascript/05-functions-over-classes.html">&larr; Functions Over Classes</a>
-    <a href="/core-javascript/07-composition-over-inheritance.html">Composition Over Inheritance &rarr;</a>
+    <a href="/core-javascript/04-functions-over-classes.html">&larr; Functions Over Classes</a>
+    <a href="/core-javascript/06-composition-over-inheritance.html">Composition Over Inheritance &rarr;</a>
   </nav>
 </body>
 </html>

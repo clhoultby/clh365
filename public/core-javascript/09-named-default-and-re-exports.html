@@ -20,7 +20,7 @@
 </head>
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
-  <p class="crumb">Core JavaScript &middot; 10 of 10</p>
+  <p class="crumb">Core JavaScript &middot; 9 of 9</p>
   <h1>Named, Default, and Re-exports</h1>
 
   <p>A namespace exports everything inside it as members of one object. ES modules give you three finer-grained ways to expose things from a file, and the choice matters more than it looks.</p>
@@ -50,7 +50,7 @@ export * from "./logger.js";</code></pre>
   <p>This is the closest thing to how a namespace auto-aggregated its members — except here it's one explicit line per source file instead of implicit merging. Use it sparingly: a barrel that re-exports an entire folder can drag in every module in that folder just to use one function, and can create import cycles in a large app. Import directly from the source file unless the barrel earns its keep.</p>
 
   <nav class="pager">
-    <a href="/core-javascript/09-case-study-refactor.html">&larr; Case Study: Refactoring a Namespace Class</a>
+    <a href="/core-javascript/08-case-study-refactor.html">&larr; Case Study: Refactoring a Namespace Class</a>
     <span class="empty">&nbsp;</span>
   </nav>
 </body>

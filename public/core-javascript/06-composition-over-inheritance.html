@@ -20,7 +20,7 @@
 </head>
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
-  <p class="crumb">Core JavaScript &middot; 7 of 10</p>
+  <p class="crumb">Core JavaScript &middot; 6 of 9</p>
   <h1>Composition Over Inheritance</h1>
 
   <p>Inheritance ends up with a base class with shared logic and subclasses overriding bits of it. Therefore each subclass's real behavior is scattered across multiple classes and files.</p>
@@ -54,8 +54,8 @@ isValidEmail("a@b.com"); // true</code></pre>
   <p>Each function does one thing and can be tested and reused on its own. <code>isValidEmail</code> just calls the checks it needs and combines them with plain <code>&amp;&amp;</code> — no generic pipe/compose helper to reach for, no guessing what order functions run in or what shape they're expected to return. There's no hierarchy to climb to see what a given check actually does, and no risk of a subclass's override silently changing behavior a base class assumed elsewhere.</p>
 
   <nav class="pager">
-    <a href="/core-javascript/06-pure-functions-and-immutability.html">&larr; Pure Functions and Immutability</a>
-    <a href="/core-javascript/08-dynamic-imports.html">Dynamic import() &rarr;</a>
+    <a href="/core-javascript/05-pure-functions-and-immutability.html">&larr; Pure Functions and Immutability</a>
+    <a href="/core-javascript/07-dynamic-imports.html">Dynamic import() &rarr;</a>
   </nav>
 </body>
 </html>
