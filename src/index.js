@@ -1,13 +1,15 @@
 import { paths } from "./manifest.js";
 
+const HTML_ENTITIES = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }[c]));
+  return s.replace(/[&<>"']/g, (c) => HTML_ENTITIES[c]);
 }
 
 function renderIndex() {
@@ -69,7 +71,7 @@ ${items}
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === "/" || url.pathname === "") {
+    if (url.pathname === "/") {
       return new Response(renderIndex(), {
         headers: { "content-type": "text/html; charset=utf-8" },
       });

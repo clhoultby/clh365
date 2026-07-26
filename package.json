@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "build": "node build-index.js"
+    "build-index": "node build-index.js"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
