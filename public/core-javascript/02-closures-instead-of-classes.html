@@ -23,16 +23,16 @@
   <p class="crumb">Core JavaScript &middot; 2 of 9</p>
   <h1>Closures Instead of Classes</h1>
 
-  <p>State usually means "put it on <code>this</code> in a class" in TS/OO code:</p>
+  <p>State does't have to mean "put it in a class" in TS code:</p>
   <h2>The old way</h2>
   <pre><code>class Counter {
   private count = 0;
 
-  increment(): void {
+  public increment(): void {
     this.count += 1;
   }
 
-  get value(): number {
+  public getValue(): number {
     return this.count;
   }
 }</code></pre>

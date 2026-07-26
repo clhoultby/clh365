@@ -26,19 +26,18 @@
   <p>Inside a namespace, "private" was a convention, not a rule enforced by the language: leading underscores, or code left un-exported. Nothing stopped another file from reaching in — namespace members were really just properties on an object.</p>
 
   <h2>The old way</h2>
-  <pre><code>namespace OrderService {
-  // "private" only by not writing `export` — still
-  // reachable if another file merges into this namespace.
-  function calculateTax(amount: number) {
+  <pre><code>export class OrderService {
+  
+  private calculateTax(amount: number) {
     return amount * 0.2;
   }
 
-  export function total(amount: number) {
-    return amount + calculateTax(amount);
+  public total(amount: number) {
+    return amount + this.calculateTax(amount);
   }
 }</code></pre>
 
-  <p>An ES module enforces the same idea for real. Anything you don't <code>export</code> simply does not exist outside the file — there's no reference path to it, merged or otherwise.</p>
+  <p>An ES module enforces the same idea for real. Anything you don't <code>export</code> simply does not exist outside the file</p>
 
   <pre><code>// order-service.js
 const calculateTax = (amount) => {
@@ -51,8 +50,7 @@ export const total = (amount) => {
 
 // another-file.js
 import { calculateTax } from "./order-service.js";
-// calculateTax is not exported — this binding simply
-// doesn't exist. Nothing to grep for, nothing to guess at.</code></pre>
+// calculateTax is not exported and is 'private' to the module</code></pre>
 
   <p>Practical effect: you can freely rename or delete an unexported helper and know, with certainty, that nothing outside the file depends on it. That used to require a repo-wide grep and a leap of faith.</p>
 
