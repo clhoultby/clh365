@@ -11,6 +11,7 @@ directory = "./public"
 binding = "ASSETS"
 html_handling = "none"
 not_found_handling = "404-page"
+run_worker_first = true
 
 # Regenerate src/manifest.js from the contents of ./public before every
 # build/deploy, so the index always reflects the files actually present.
