@@ -20,26 +20,20 @@
 </head>
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
-  <p class="crumb">Core JavaScript &middot; 9 of 10</p>
+  <p class="crumb">Core JavaScript &middot; 8 of 10</p>
   <h1>Dynamic import()</h1>
 
-  <p>Namespaces and global scripts have no answer for "only load this code when it's actually needed" — every script tag loads up front, in a fixed order you manage by hand.</p>
-  <h2>The old way</h2>
-  <pre><code>&lt;script src="charting-library.js"&gt;&lt;/script&gt;
-&lt;script src="app.js"&gt;&lt;/script&gt;
-&lt;!-- charting-library.js downloads and parses even if
-     the user never opens the chart --&gt;</code></pre>
-
-  <h2>Load a module only when you need it</h2>
+  <p>Some code is only needed sometimes — a chart library behind a button nobody may click, an admin panel most users never open. Loading it up front costs everyone, even the people who never trigger it.</p>
   <pre><code>button.addEventListener("click", async () => {
   const { renderChart } = await import("./chart.js");
   renderChart(data);
 });</code></pre>
-  <p><code>import()</code> is a function, not a static declaration — call it anywhere, including conditionally. It returns a promise for the module's exports, and a bundler treats it as a split point: the code in <code>chart.js</code> ships in its own file and downloads only when this line actually runs. This is how route-based and feature-based code-splitting work under the hood.</p>
+  <p><code>import()</code> is a function, not a static declaration — unlike a top-level <code>import</code>, you can call it anywhere, including conditionally, inside an event handler, after a check. It returns a promise for the module's exports, so it slots straight into <code>await</code>.</p>
+  <p>A bundler treats each <code>import()</code> call as a split point: the code in <code>chart.js</code> is built into its own file and only downloaded the first time this line actually runs. Click the button once and it fetches; never click it and it never loads at all. This is the mechanism route-based and feature-based code-splitting are built on.</p>
 
   <nav class="pager">
-    <a href="/core-javascript/08-composition-over-inheritance.html">&larr; Composition Over Inheritance</a>
-    <a href="/core-javascript/10-case-study-refactor.html">Case Study: Refactoring a Namespace Class &rarr;</a>
+    <a href="/core-javascript/07-composition-over-inheritance.html">&larr; Composition Over Inheritance</a>
+    <a href="/core-javascript/09-case-study-refactor.html">Case Study: Refactoring a Namespace Class &rarr;</a>
   </nav>
 </body>
 </html>

@@ -20,7 +20,7 @@
 </head>
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
-  <p class="crumb">Core JavaScript &middot; 4 of 10</p>
+  <p class="crumb">Core JavaScript &middot; 3 of 10</p>
   <h1>Closures Instead of Classes</h1>
 
   <p>State usually means "put it on <code>this</code> in a class" in TS/OO code:</p>
@@ -76,8 +76,8 @@ value(); // reads the same `count` every import shares</code></pre>
   <p><code>count</code> here is a module-level variable, not a class field or a factory's local — but it's private the same way: nothing outside <code>counter.js</code> can reach it unless the module exports a way in. <code>increment</code> and <code>value</code> close over it exactly like the methods returned from <code>createCounter()</code> closed over their local <code>count</code>; the only difference is there's one shared instance instead of many, because there's exactly one module.</p>
 
   <nav class="pager">
-    <a href="/core-javascript/03-module-scope-encapsulation.html">&larr; Module Scope Is Your Encapsulation</a>
-    <a href="/core-javascript/05-replacing-static-members.html">Replacing Static Members and Singletons &rarr;</a>
+    <a href="/core-javascript/02-module-scope-encapsulation.html">&larr; Module Scope</a>
+    <a href="/core-javascript/04-replacing-static-members.html">Replacing Static Members and Singletons &rarr;</a>
   </nav>
 </body>
 </html>
