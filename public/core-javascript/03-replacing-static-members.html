@@ -81,6 +81,8 @@ isEnabled(); // true</code></pre>
 }
 
 ConfigService.getInstance().get("apiUrl");</code></pre>
+
+<h2>The new way</h2>
   <p>A module already gives you exactly that guarantee, for free. A given module specifier is fetched, parsed, and evaluated once — every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app, no matter how many files ask for it, resolves to the same module record. There's no lazy-init check to write and no instance field to guard, because the module system already deduplicates by path.</p>
   <pre><code>// config-service.js
 const settings = loadSettings();
