@@ -1,0 +1,5 @@
+{
+  "title": "Core JavaScript",
+  "description": "Modern ES Modules and functional patterns, for developers coming from namespace- and class-driven TypeScript.",
+  "order": 1
+}

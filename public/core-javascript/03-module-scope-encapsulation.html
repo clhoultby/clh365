@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module Scope Is Your Encapsulation</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 3 of 10</p>
+  <h1>Module Scope Is Your Encapsulation</h1>
+
+  <p>Inside a namespace, "private" was a convention, not a rule enforced by the language: leading underscores, or code left un-exported. Nothing stopped another file from reaching in — namespace members were really just properties on an object.</p>
+
+  <pre><code>namespace OrderService {
+  // "private" only by not writing `export` — still
+  // reachable if another file merges into this namespace.
+  function calculateTax(amount: number) {
+    return amount * 0.2;
+  }
+
+  export function total(amount: number) {
+    return amount + calculateTax(amount);
+  }
+}</code></pre>
+
+  <p>An ES module enforces the same idea for real. Anything you don't <code>export</code> simply does not exist outside the file — there's no reference path to it, merged or otherwise.</p>
+
+  <pre><code>// order-service.js
+function calculateTax(amount) {
+  return amount * 0.2;
+}
+
+export function total(amount) {
+  return amount + calculateTax(amount);
+}
+
+// another-file.js
+import { calculateTax } from "./order-service.js";
+// calculateTax is not exported — this binding simply
+// doesn't exist. Nothing to grep for, nothing to guess at.</code></pre>
+
+  <p>Practical effect: you can freely rename or delete an unexported helper and know, with certainty, that nothing outside the file depends on it. That used to require a repo-wide grep and a leap of faith.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/02-named-default-and-re-exports.html">&larr; Named, Default, and Re-exports</a>
+    <a href="/core-javascript/04-closures-instead-of-classes.html">Closures Instead of Classes &rarr;</a>
+  </nav>
+</body>
+</html>

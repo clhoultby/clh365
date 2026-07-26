@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynamic import()</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 9 of 10</p>
+  <h1>Dynamic import()</h1>
+
+  <p>Namespaces and global scripts have no answer for "only load this code when it's actually needed" — every script tag loads up front, in a fixed order you manage by hand.</p>
+  <pre><code>&lt;script src="charting-library.js"&gt;&lt;/script&gt;
+&lt;script src="app.js"&gt;&lt;/script&gt;
+&lt;!-- charting-library.js downloads and parses even if
+     the user never opens the chart --&gt;</code></pre>
+
+  <h2>Load a module only when you need it</h2>
+  <pre><code>button.addEventListener("click", async () => {
+  const { renderChart } = await import("./chart.js");
+  renderChart(data);
+});</code></pre>
+  <p><code>import()</code> is a function, not a static declaration — call it anywhere, including conditionally. It returns a promise for the module's exports, and a bundler treats it as a split point: the code in <code>chart.js</code> ships in its own file and downloads only when this line actually runs. This is how route-based and feature-based code-splitting work under the hood.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/08-composition-over-inheritance.html">&larr; Composition Over Inheritance</a>
+    <a href="/core-javascript/10-case-study-refactor.html">Case Study: Refactoring a Namespace Class &rarr;</a>
+  </nav>
+</body>
+</html>

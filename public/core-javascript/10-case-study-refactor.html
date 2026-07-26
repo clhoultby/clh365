@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Study: Refactoring a Namespace Class</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  li { margin: .3rem 0; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 10 of 10</p>
+  <h1>Case Study: Refactoring a Namespace Class</h1>
+
+  <p>Putting it together: here's a small order-total service in the old style, then the same behavior rebuilt as an ES module using the patterns from this path.</p>
+
+  <h2>Before</h2>
+  <pre><code>namespace Orders {
+  export class OrderService {
+    private items: { price: number; qty: number }[] = [];
+
+    add(price: number, qty: number): void {
+      this.items.push({ price, qty });
+    }
+
+    total(): number {
+      let sum = 0;
+      for (const item of this.items) {
+        sum += item.price * item.qty;
+      }
+      return sum;
+    }
+  }
+}
+
+const service = new Orders.OrderService();
+service.add(10, 2);
+service.total(); // 20</code></pre>
+
+  <h2>After</h2>
+  <pre><code>// order-service.js
+function itemTotal(item) {
+  return item.price * item.qty;
+}
+
+export function createOrder() {
+  let items = [];
+
+  return {
+    add(price, qty) {
+      items = [...items, { price, qty }];
+    },
+    total() {
+      return items.reduce((sum, item) => sum + itemTotal(item), 0);
+    },
+  };
+}
+
+// usage
+import { createOrder } from "./order-service.js";
+
+const order = createOrder();
+order.add(10, 2);
+order.total(); // 20</code></pre>
+
+  <h2>What changed</h2>
+  <ul>
+    <li><strong>Module, not namespace</strong> — <code>order-service.js</code> is scoped by the file, exported explicitly, with no global merging.</li>
+    <li><strong>Closure, not class fields</strong> — <code>items</code> is private by scope; there's no <code>this</code> to lose track of.</li>
+    <li><strong>Pure helper</strong> — <code>itemTotal</code> is a small unexported function, not a private method tied to an instance.</li>
+    <li><strong>New array, not mutation</strong> — <code>add</code> replaces <code>items</code> with a new array via spread rather than pushing into the existing one.</li>
+  </ul>
+  <p>Nothing here is a rule to apply everywhere — but it's the default worth reaching for first, before a class.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/09-dynamic-imports.html">&larr; Dynamic import()</a>
+    <span class="empty">&nbsp;</span>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Composition Over Inheritance</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 8 of 10</p>
+  <h1>Composition Over Inheritance</h1>
+
+  <p>Namespace-driven OO code tends to grow inheritance chains: a base class with shared logic, subclasses overriding bits of it. It works, but each subclass's real behavior is scattered across however many levels of <code>extends</code> you climb.</p>
+  <pre><code>class BaseValidator {
+  validate(value: string) {
+    return this.check(value);
+  }
+  protected check(value: string) {
+    return value.length > 0;
+  }
+}
+
+class EmailValidator extends BaseValidator {
+  protected check(value: string) {
+    return super.check(value) && value.includes("@");
+  }
+}</code></pre>
+
+  <h2>Compose small functions instead</h2>
+  <pre><code>const notEmpty = (value) => value.length > 0;
+const hasAt = (value) => value.includes("@");
+
+const pipe = (...fns) => (value) => fns.every((fn) => fn(value));
+
+const isValidEmail = pipe(notEmpty, hasAt);
+
+isValidEmail("a@b.com"); // true</code></pre>
+  <p>Each function does one thing and can be tested and reused on its own. Building <code>isValidEmail</code> is just picking which small functions to combine — there's no hierarchy to climb to see what a given check actually does, and no risk of a subclass's override silently changing behavior a base class assumed elsewhere.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/07-pure-functions-and-immutability.html">&larr; Pure Functions and Immutability</a>
+    <a href="/core-javascript/09-dynamic-imports.html">Dynamic import() &rarr;</a>
+  </nav>
+</body>
+</html>

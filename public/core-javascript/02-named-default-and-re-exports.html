@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Named, Default, and Re-exports</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 2 of 10</p>
+  <h1>Named, Default, and Re-exports</h1>
+
+  <p>A namespace exports everything inside it as members of one object. ES modules give you three finer-grained ways to expose things from a file, and the choice matters more than it looks.</p>
+
+  <h2>Named exports</h2>
+  <pre><code>// format.js
+export function formatDate(d) { /* ... */ }
+export function formatCurrency(n) { /* ... */ }
+
+// usage
+import { formatDate, formatCurrency } from "./format.js";</code></pre>
+  <p>Named exports mirror namespace members most closely, and they come with a real benefit: an editor can rename <code>formatDate</code> everywhere it's used. A default export can't offer that — every importer is free to call it whatever they like.</p>
+
+  <h2>Default exports</h2>
+  <pre><code>// logger.js
+export default function log(message) { /* ... */ }
+
+// usage — the name here is arbitrary
+import log from "./logger.js";
+import whatever from "./logger.js"; // same function, any name</code></pre>
+  <p>Reserve default exports for a file with one obvious main export (a single component, a single class). For anything else, prefer named exports — it keeps renames and auto-imports reliable.</p>
+
+  <h2>Re-exports (barrel files)</h2>
+  <pre><code>// index.js
+export * from "./format.js";
+export * from "./logger.js";</code></pre>
+  <p>This is the closest thing to how a namespace auto-aggregated its members — except here it's one explicit line per source file instead of implicit merging. Use it sparingly: a barrel that re-exports an entire folder can drag in every module in that folder just to use one function, and can create import cycles in a large app. Import directly from the source file unless the barrel earns its keep.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/01-es-modules-vs-namespaces.html">&larr; ES Modules Replace Namespaces</a>
+    <a href="/core-javascript/03-module-scope-encapsulation.html">Module Scope Is Your Encapsulation &rarr;</a>
+  </nav>
+</body>
+</html>

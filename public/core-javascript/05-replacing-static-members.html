@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Replacing Static Members and Singletons</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 5 of 10</p>
+  <h1>Replacing Static Members and Singletons</h1>
+
+  <p><code>static</code> members have been used for singleton state or accessing variables without an instance:</p>
+  <pre><code>class FeatureFlag {
+  private static enabled = false;
+
+  static enable(): void {
+    this.enabled = true;
+  }
+
+  static isEnabled(): boolean {
+    return this.enabled;
+  }
+}
+
+FeatureFlag.enable();
+FeatureFlag.isEnabled(); // true</code></pre>
+
+  <h2>A module is already a shared instance</h2>
+  <p>A module's top-level code runs once, the first time it's imported, and every importer shares the same live bindings. There's no need for a class or the <code>static</code> keyword to get "one shared instance" — that's just what a module is.</p>
+  <pre><code>// feature-flag.js
+let enabled = false;
+
+export function enable() {
+  enabled = true;
+}
+
+export function isEnabled() {
+  return enabled;
+}
+
+// usage — every importer shares the same `enabled` flag
+import { enable, isEnabled } from "./feature-flag.js";
+
+enable();
+isEnabled(); // true</code></pre>
+  <p>Here <code>enabled</code> is also private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field unless you deliberately export it. If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it, rather than exporting the mutable <code>let</code> binding directly.</p>
+
+  <h2>The same goes for singletons</h2>
+  <p>The singleton pattern — a private constructor plus a static <code>getInstance()</code> — exists to guarantee exactly one instance no matter how many places ask for it:</p>
+  <pre><code>class ConfigService {
+  private static instance: ConfigService;
+
+  private constructor(private readonly settings: Settings) {}
+
+  static getInstance(): ConfigService {
+    if (!ConfigService.instance) {
+      ConfigService.instance = new ConfigService(loadSettings());
+    }
+    return ConfigService.instance;
+  }
+
+  get(key: string) {
+    return this.settings[key];
+  }
+}
+
+ConfigService.getInstance().get("apiUrl");</code></pre>
+  <p>A module already gives you exactly that guarantee, for free. A given module specifier is fetched, parsed, and evaluated once — every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app, no matter how many files ask for it, resolves to the same module record. There's no lazy-init check to write and no instance field to guard, because the module system already deduplicates by path.</p>
+  <pre><code>// config-service.js
+const settings = loadSettings();
+
+export function get(key) {
+  return settings[key];
+}
+
+// usage — every importer gets the same `settings`,
+// loaded exactly once, the first time any file imports this module
+import { get } from "./config-service.js";
+
+get("apiUrl");</code></pre>
+  <p>The private constructor, the instance-guard <code>if</code>, and <code>getInstance()</code> all existed to compensate for classes not having module-level scope of their own. Once the module <em>is</em> the scope, that plumbing has nothing left to do.</p>
+
+  <nav class="pager">
+    <a href="/core-javascript/04-closures-instead-of-classes.html">&larr; Closures Instead of Classes</a>
+    <a href="/core-javascript/06-functions-over-classes.html">Functions Over Classes &rarr;</a>
+  </nav>
+</body>
+</html>
