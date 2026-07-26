@@ -24,6 +24,7 @@
   <h1>Functions Over Classes</h1>
 
   <p>A lot of "utility classes" made of nothing but <code>static</code> methods are a namespace wearing a class costume:</p>
+  <h2>The old way</h2>
   <pre><code>class MathUtils {
   static square(n: number) {
     return n * n;
@@ -37,12 +38,12 @@ MathUtils.square(4);</code></pre>
   <p>Nothing here needs an instance, inheritance, or <code>instanceof</code> — it's grouping for grouping's sake. A module already groups related code; you don't need a class on top of it.</p>
 
   <pre><code>// math-utils.js
-export function square(n) {
+export const square = (n) => {
   return n * n;
-}
-export function clamp(n, min, max) {
+};
+export const clamp = (n, min, max) => {
   return Math.min(Math.max(n, min), max);
-}
+};
 
 // usage
 import { square } from "./math-utils.js";

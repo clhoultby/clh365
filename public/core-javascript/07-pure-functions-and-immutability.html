@@ -24,6 +24,7 @@
   <h1>Pure Functions and Immutability</h1>
 
   <p>Shared namespaces made shared mutable state easy to reach for — everything lived on the same object, so mutating it in place felt natural:</p>
+  <h2>The old way</h2>
   <pre><code>namespace Cart {
   export function addDiscount(items: Item[], pct: number) {
     for (const item of items) {
@@ -35,12 +36,12 @@
   <p>Call this twice, or call it and then look at the original array elsewhere, and you get a bug that's hard to trace back — the input changed underneath its owner.</p>
 
   <h2>Return new data instead of mutating</h2>
-  <pre><code>export function addDiscount(items, pct) {
+  <pre><code>export const addDiscount = (items, pct) => {
   return items.map((item) => ({
     ...item,
     price: item.price * (1 - pct),
   }));
-}
+};
 
 const discounted = addDiscount(items, 0.1);
 // `items` is untouched; `discounted` is a new array</code></pre>

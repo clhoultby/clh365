@@ -39,9 +39,9 @@ Utils.formatDate(new Date());</code></pre>
 
   <h2>The ES module way</h2>
   <pre><code>// utils.js
-export function formatDate(d) {
+export const formatDate = (d) => {
   return d.toISOString().slice(0, 10);
-}
+};
 
 // main.js
 import { formatDate } from "./utils.js";

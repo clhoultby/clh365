@@ -24,6 +24,7 @@
   <h1>Dynamic import()</h1>
 
   <p>Namespaces and global scripts have no answer for "only load this code when it's actually needed" — every script tag loads up front, in a fixed order you manage by hand.</p>
+  <h2>The old way</h2>
   <pre><code>&lt;script src="charting-library.js"&gt;&lt;/script&gt;
 &lt;script src="app.js"&gt;&lt;/script&gt;
 &lt;!-- charting-library.js downloads and parses even if

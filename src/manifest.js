@@ -16,7 +16,7 @@ export const paths = [
       },
       {
         "path": "core-javascript/03-module-scope-encapsulation.html",
-        "title": "Module Scope Is Your Encapsulation"
+        "title": "Module Scope"
       },
       {
         "path": "core-javascript/04-closures-instead-of-classes.html",

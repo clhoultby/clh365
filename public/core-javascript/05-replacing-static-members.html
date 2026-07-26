@@ -24,6 +24,7 @@
   <h1>Replacing Static Members and Singletons</h1>
 
   <p><code>static</code> members have been used for singleton state or accessing variables without an instance:</p>
+  <h2>The old way</h2>
   <pre><code>class FeatureFlag {
   private static enabled = false;
 
@@ -40,17 +41,17 @@ FeatureFlag.enable();
 FeatureFlag.isEnabled(); // true</code></pre>
 
   <h2>A module is already a shared instance</h2>
-  <p>A module's top-level code runs once, the first time it's imported, and every importer shares the same live bindings. There's no need for a class or the <code>static</code> keyword to get "one shared instance" — that's just what a module is.</p>
+  <p>A module's top-level code runs once, the first time it's imported, and every importer shares the same module. There's no need for a class or the <code>static</code> keyword to get "one shared instance" — that's just what a module is.</p>
   <pre><code>// feature-flag.js
 let enabled = false;
 
-export function enable() {
+export const enable = () => {
   enabled = true;
-}
+};
 
-export function isEnabled() {
+export const isEnabled = () => {
   return enabled;
-}
+};
 
 // usage — every importer shares the same `enabled` flag
 import { enable, isEnabled } from "./feature-flag.js";
@@ -61,6 +62,7 @@ isEnabled(); // true</code></pre>
 
   <h2>The same goes for singletons</h2>
   <p>The singleton pattern — a private constructor plus a static <code>getInstance()</code> — exists to guarantee exactly one instance no matter how many places ask for it:</p>
+  <h2>The old way</h2>
   <pre><code>class ConfigService {
   private static instance: ConfigService;
 
@@ -83,9 +85,9 @@ ConfigService.getInstance().get("apiUrl");</code></pre>
   <pre><code>// config-service.js
 const settings = loadSettings();
 
-export function get(key) {
+export const get = (key) => {
   return settings[key];
-}
+};
 
 // usage — every importer gets the same `settings`,
 // loaded exactly once, the first time any file imports this module

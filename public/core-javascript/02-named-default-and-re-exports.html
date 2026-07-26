@@ -27,8 +27,8 @@
 
   <h2>Named exports</h2>
   <pre><code>// format.js
-export function formatDate(d) { /* ... */ }
-export function formatCurrency(n) { /* ... */ }
+export const formatDate = (d) => { /* ... */ };
+export const formatCurrency = (n) => { /* ... */ };
 
 // usage
 import { formatDate, formatCurrency } from "./format.js";</code></pre>
@@ -36,7 +36,7 @@ import { formatDate, formatCurrency } from "./format.js";</code></pre>
 
   <h2>Default exports</h2>
   <pre><code>// logger.js
-export default function log(message) { /* ... */ }
+export default function (message) { /* ... */ };
 
 // usage — the name here is arbitrary
 import log from "./logger.js";

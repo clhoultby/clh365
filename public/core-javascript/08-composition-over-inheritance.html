@@ -24,6 +24,7 @@
   <h1>Composition Over Inheritance</h1>
 
   <p>Namespace-driven OO code tends to grow inheritance chains: a base class with shared logic, subclasses overriding bits of it. It works, but each subclass's real behavior is scattered across however many levels of <code>extends</code> you climb.</p>
+  <h2>The old way</h2>
   <pre><code>class BaseValidator {
   validate(value: string) {
     return this.check(value);
