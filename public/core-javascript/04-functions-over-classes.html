@@ -38,12 +38,16 @@ MathUtils.square(4);</code></pre>
   <p>Nothing here needs an instance, inheritance, or <code>instanceof</code> — it's grouping for grouping's sake. A module already groups related code; you don't need a class on top of it.</p>
 
   <pre><code>// math-utils.js
+
 export const square = (n) => {
   return n * n;
 };
+
 export const clamp = (n, min, max) => {
   return Math.min(Math.max(n, min), max);
 };
+
+
 
 // usage
 import { square } from "./math-utils.js";
