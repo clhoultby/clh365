@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The External Store</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">React &middot; 1 of 2</p>
+  <h1>The External Store</h1>
+
+  <p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes, one to read the current value. Neither is React-specific, so the store stays plain JavaScript that any part of the app can own:</p>
+
+  <pre><code>// cart-store.js
+let state = { items: [] };
+const listeners = new Set();
+
+export const subscribe = (listener) =&gt; {
+  listeners.add(listener);
+  return () =&gt; listeners.delete(listener);
+};
+
+export const getSnapshot = () =&gt; {
+  return state;
+};
+
+export const addItem = (item) =&gt; {
+  state = { ...state, items: [...state.items, item] };
+  listeners.forEach((listener) =&gt; listener());
+};</code></pre>
+
+  <p><code>subscribe</code> returns its own unsubscribe function, which is how React cleans up on unmount without the store knowing React exists.</p>
+
+  <h2>Replace state, don't mutate it</h2>
+  <p>React compares the previous snapshot to the new one with <code>Object.is</code>. Pushing into <code>state.items</code> leaves the reference identical, so React concludes nothing happened and skips the re-render — hence the new object and new array in <code>addItem</code>.</p>
+
+  <h2>Both sides use the same module</h2>
+  <p>Nothing above imports React, so the framework you're migrating from can drive the store directly:</p>
+  <pre><code>// cart-controller.ts
+import { subscribe, getSnapshot, addItem } from "./cart-store.js";
+
+export class CartController {
+  private unsubscribe?: () =&gt; void;
+
+  onInit() {
+    this.unsubscribe = subscribe(() =&gt; this.render(getSnapshot()));
+  }
+
+  addToCart(item: CartItem) {
+    addItem(item);
+  }
+
+  onDestroy() {
+    this.unsubscribe?.();
+  }
+
+  private render(cart: CartState) { /* update the DOM */ }
+}</code></pre>
+
+  <p>A module evaluates once and every importer resolves to that same evaluated module, so there is one <code>state</code> and one set of listeners for the whole app. Nothing has to be wired up to make both frameworks agree on which store they mean.</p>
+
+  <svg viewBox="0 0 640 320" role="img" aria-labelledby="diagram-title"
+       style="display: block; width: 100%; height: auto; margin: 1.75rem 0; overflow: visible;">
+    <title id="diagram-title">cart-store.js is imported by both a React module and a custom framework module; neither owns it.</title>
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" opacity=".55"/>
+      </marker>
+    </defs>
+
+    <g fill="none" stroke="currentColor" stroke-opacity=".4">
+      <rect x="30" y="16" width="250" height="72" rx="6"/>
+      <rect x="360" y="16" width="250" height="72" rx="6"/>
+      <rect x="140" y="216" width="360" height="88" rx="6" fill="currentColor" fill-opacity=".07"/>
+    </g>
+
+    <g fill="currentColor" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="14">
+      <text x="155" y="47">React module</text>
+      <text x="485" y="47">Custom framework module</text>
+    </g>
+    <g fill="currentColor" fill-opacity=".6" text-anchor="middle"
+       font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">
+      <text x="155" y="69">cart-badge.jsx</text>
+      <text x="485" y="69">class CartController</text>
+    </g>
+
+    <g stroke="currentColor" stroke-opacity=".55" marker-end="url(#arrow)">
+      <line x1="155" y1="88" x2="155" y2="212"/>
+      <line x1="485" y1="88" x2="485" y2="212"/>
+    </g>
+    <g fill="currentColor" fill-opacity=".6"
+       font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">
+      <text x="167" y="154">useSyncExternalStore</text>
+      <text x="473" y="154" text-anchor="end">subscribe / addItem</text>
+    </g>
+
+    <g text-anchor="middle" fill="currentColor">
+      <text x="320" y="252" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14">cart-store.js</text>
+      <text x="320" y="274" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill-opacity=".6">subscribe &middot; getSnapshot &middot; addItem</text>
+      <text x="320" y="294" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill-opacity=".6">imports nothing &mdash; owned by neither side</text>
+    </g>
+  </svg>
+
+  <nav class="pager">
+    <span class="empty">&nbsp;</span>
+    <a href="/react/02-use-sync-external-store.html">useSyncExternalStore &rarr;</a>
+  </nav>
+</body>
+</html>

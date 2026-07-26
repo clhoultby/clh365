@@ -51,15 +51,11 @@ export const paths = [
     "order": 2,
     "lessons": [
       {
-        "path": "react/01-mirroring-external-state.html",
-        "title": "Mirroring External State"
-      },
-      {
-        "path": "react/02-the-external-store.html",
+        "path": "react/01-the-external-store.html",
         "title": "The External Store"
       },
       {
-        "path": "react/03-use-sync-external-store.html",
+        "path": "react/02-use-sync-external-store.html",
         "title": "useSyncExternalStore"
       }
     ]
