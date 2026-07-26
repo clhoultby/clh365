@@ -61,26 +61,6 @@ button.addEventListener("click", counter.increment); // just works</code></pre>
 
 <p> Now its a small function that won't get extended or instantiated multiple times like a class would.</p>
 
-  <h2>Only need one?</h2>
-  <p>Use a <code>createCounter()</code>function when you need several independent counters. If you only need one or a singleton, the module itself is already that one shared scope and is a singleton</p>
-  <pre><code>// counter.js
-let count = 0;
-
-export const increment = () => {
-  count += 1;
-};
-
-export const value = () => {
-  return count;
-};
-
-// usage
-import { increment, value } from "./counter.js";
-
-button.addEventListener("click", increment);
-value(); // reads the same `count` every import shares</code></pre>
-  <p><code>count</code> here is a module-level variable, not a class field or a factory's local — but it's private the same way: nothing outside <code>counter.js</code> can reach it unless the module exports a way in. <code>increment</code> and <code>value</code> close over it exactly like the methods returned from <code>createCounter()</code> closed over their local <code>count</code>; the only difference is there's one shared instance instead of many, because there's exactly one module.</p>
-
   <nav class="pager">
     <a href="/core-javascript/01-module-scope-encapsulation.html">&larr; Module Scope</a>
     <a href="/core-javascript/03-replacing-static-members.html">Replacing Static Members and Singletons &rarr;</a>
