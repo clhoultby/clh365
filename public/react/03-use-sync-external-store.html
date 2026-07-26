@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>useSyncExternalStore</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">React &middot; 3 of 3</p>
+  <h1>useSyncExternalStore</h1>
+
+  <p>With the store in place, the component drops its <code>useState</code> and <code>useEffect</code> entirely:</p>
+
+  <pre><code>import { useSyncExternalStore } from "react";
+import { subscribe, getSnapshot } from "./cart-store.js";
+
+const CartBadge = () =&gt; {
+  const cart = useSyncExternalStore(subscribe, getSnapshot);
+
+  return &lt;span&gt;{cart.items.length}&lt;/span&gt;;
+};</code></pre>
+
+  <p>React subscribes on mount, unsubscribes on unmount, and re-reads the snapshot whenever a listener fires. The part an effect can't replicate: React also re-reads the snapshot before committing, and restarts the render if the value moved while it was working. Every component reading this store in a given commit sees the same value.</p>
+
+  <h2>The snapshot must be referentially stable</h2>
+  <p>React calls <code>getSnapshot</code> during render and compares the result to the last one. If it returns a fresh object each time, the value never compares equal, and React re-renders forever:</p>
+  <pre><code>// infinite loop — a new object on every call
+useSyncExternalStore(subscribe, () =&gt; {
+  return { count: getSnapshot().items.length };
+});
+
+// fine — a number, compared by value
+useSyncExternalStore(subscribe, () =&gt; {
+  return getSnapshot().items.length;
+});</code></pre>
+  <p>Select a primitive where you can. When a component genuinely needs a derived object, cache it in the store and return the cached reference until the underlying state changes.</p>
+
+  <h2>Wrap it in a hook</h2>
+  <p>Both arguments should be stable references, so define them outside the component rather than inline:</p>
+  <pre><code>// cart-hooks.js
+import { useSyncExternalStore } from "react";
+import { subscribe, getSnapshot } from "./cart-store.js";
+
+const getCount = () =&gt; getSnapshot().items.length;
+
+export const useCartCount = () =&gt; {
+  return useSyncExternalStore(subscribe, getCount);
+};</code></pre>
+  <p>Components import <code>useCartCount</code> and never touch the store directly. The store stays plain JavaScript that the other framework can own, and React's dependency on it is one hook in one file.</p>
+
+  <p>If the app server-renders, pass a third argument — <code>getServerSnapshot</code> — returning the value to use during SSR and hydration, since the client store doesn't exist on the server.</p>
+
+  <nav class="pager">
+    <a href="/react/02-the-external-store.html">&larr; The External Store</a>
+    <span class="empty">&nbsp;</span>
+  </nav>
+</body>
+</html>

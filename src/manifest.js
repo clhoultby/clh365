@@ -7,7 +7,7 @@ export const paths = [
     "order": 1,
     "lessons": [
       {
-        "path": "core-javascript/01-module-scope-encapsulation.html",
+        "path": "core-javascript/01-module-scope.html",
         "title": "Module Scope"
       },
       {
@@ -41,6 +41,26 @@ export const paths = [
       {
         "path": "core-javascript/09-named-default-and-re-exports.html",
         "title": "Named, Default, and Re-exports"
+      }
+    ]
+  },
+  {
+    "slug": "react",
+    "title": "React",
+    "description": "Connecting React to state it doesn't own — sharing a single source of truth with an existing framework via useSyncExternalStore.",
+    "order": 2,
+    "lessons": [
+      {
+        "path": "react/01-mirroring-external-state.html",
+        "title": "Mirroring External State"
+      },
+      {
+        "path": "react/02-the-external-store.html",
+        "title": "The External Store"
+      },
+      {
+        "path": "react/03-use-sync-external-store.html",
+        "title": "useSyncExternalStore"
       }
     ]
   }

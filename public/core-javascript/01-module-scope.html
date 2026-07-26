@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module Scope</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 1 of 9</p>
+  <h1>Module Scope</h1>
+
+  <p>A module's top-level code runs once. The first <code>import</code> of a file evaluates it; every later import of that same file resolves to the module that was already evaluated. Top-level bindings are therefore shared by every importer, not recreated per import.</p>
+
+  <h2>The old way</h2>
+  <p>With a class, state belongs to an instance, so sharing it means making sure every caller gets the <em>same</em> instance:</p>
+  <pre><code>export class ApiClient {
+  private cache = new Map&lt;string, Response&gt;();
+
+  async get(url: string): Promise&lt;Response&gt; {
+    if (!this.cache.has(url)) {
+      this.cache.set(url, await fetch(url));
+    }
+    return this.cache.get(url)!;
+  }
+}</code></pre>
+
+  <p>Nothing enforces that. Two files can each construct one and quietly get separate caches:</p>
+  <pre><code>// file-a.ts
+const client = new ApiClient();
+
+// file-b.ts
+const client = new ApiClient(); // its own cache — no error, no warning</code></pre>
+
+  <h2>The new way</h2>
+  <p>Move the state to the top level of a module and the sharing is structural — <code>cache</code> is created once, when the module first evaluates:</p>
+  <pre><code>// api-client.js
+const cache = new Map();
+
+export const get = async (url) => {
+  if (!cache.has(url)) {
+    cache.set(url, await fetch(url));
+  }
+  return cache.get(url);
+};
+
+
+
+// file-a.js
+import { get } from "./api-client.js";
+
+// file-b.js
+import { get } from "./api-client.js"; // same module, same cache</code></pre>
+
+  <p>Modules are keyed by resolved path, so both imports return the same evaluated module no matter how many files ask for it or what order they load in. One shared instance is the default, guaranteed by the module system rather than by wiring the same object through your app.</p>
+
+  <nav class="pager">
+    <span class="empty">&nbsp;</span>
+    <a href="/core-javascript/02-closures-instead-of-classes.html">Closures Instead of Classes &rarr;</a>
+  </nav>
+</body>
+</html>

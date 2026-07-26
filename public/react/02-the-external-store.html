@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The External Store</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">React &middot; 2 of 3</p>
+  <h1>The External Store</h1>
+
+  <p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes, one to read the current value. Neither is React-specific, so the store itself is plain JavaScript that any part of the app can own:</p>
+
+  <pre><code>// cart-store.js
+let state = { items: [] };
+const listeners = new Set();
+
+export const subscribe = (listener) =&gt; {
+  listeners.add(listener);
+  return () =&gt; listeners.delete(listener);
+};
+
+export const getSnapshot = () =&gt; {
+  return state;
+};
+
+export const addItem = (item) =&gt; {
+  state = { ...state, items: [...state.items, item] };
+  listeners.forEach((listener) =&gt; listener());
+};</code></pre>
+
+  <p><code>subscribe</code> returns its own unsubscribe function — that's the contract React expects, and it's what lets React clean up on unmount without the store knowing React exists.</p>
+
+  <h2>Replace state, don't mutate it</h2>
+  <p>React decides whether anything changed by comparing the previous snapshot to the new one with <code>Object.is</code>. Pushing into <code>state.items</code> would leave the reference identical, so React would conclude nothing happened and skip the re-render. <code>addItem</code> therefore builds a new object and a new array rather than mutating either in place.</p>
+
+  <h2>Both sides use the same module</h2>
+  <p>Nothing above imports React, so the framework you're migrating from can drive the store directly:</p>
+  <pre><code>// anywhere outside React — a service, a controller, plain script
+import { subscribe, addItem } from "./cart-store.js";
+
+addItem({ sku: "A1", qty: 2 });
+subscribe(() =&gt; render(getSnapshot()));</code></pre>
+
+  <p>A module evaluates once and every importer resolves to that same evaluated module, so there is one <code>state</code> and one set of listeners for the whole app — no wiring required to make both frameworks agree on which store they mean.</p>
+
+  <nav class="pager">
+    <a href="/react/01-mirroring-external-state.html">&larr; Mirroring External State</a>
+    <a href="/react/03-use-sync-external-store.html">useSyncExternalStore &rarr;</a>
+  </nav>
+</body>
+</html>

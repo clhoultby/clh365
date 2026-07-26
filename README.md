@@ -5,13 +5,14 @@ Cloudflare Worker serving static HTML training material.
 ## How it works
 
 - Training material is organized into **paths** — distinct topic tracks, each a folder under `public/` (e.g. `public/core-javascript/`). Each path is a sequence of small, self-contained lessons.
-- HTML files are served directly by [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) at their path (e.g. `public/core-javascript/01-es-modules-vs-namespaces.html` is served at `/core-javascript/01-es-modules-vs-namespaces.html`).
+- HTML files are served directly by [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/) at their path (e.g. `public/core-javascript/01-module-scope.html` is served at `/core-javascript/01-module-scope.html`).
 - The Worker (`src/index.js`) renders an auto-generated index at `/`, grouped by path.
 - `build-index.js` scans `public/` and regenerates `src/manifest.js` on each build/deploy: every subdirectory becomes a path, every `.html` file inside it becomes a lesson (ordered alphabetically — hence the `01-`, `02-` filename prefixes), and each lesson's `<title>` becomes its index label.
 
 ## Paths
 
 - **Core JavaScript** (`public/core-javascript/`) — modern ES Modules and functional patterns, aimed at developers coming from namespace- and class-driven TypeScript.
+- **React** (`public/react/`) — connecting React to state it doesn't own, sharing a single source of truth with an existing framework via `useSyncExternalStore`.
 
 ## Develop
 
