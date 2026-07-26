@@ -37,26 +37,32 @@
   }
 }</code></pre>
 
-  <h2>A closure does the same job without <code>this</code></h2>
+  <h2>Using a closure</h2>
+
+  <p>You can have state without classes by using closures:</p>
   <pre><code>const createCounter = () => {
   let count = 0;
 
-  return {
-    increment() {
+  const increment = () => {
       count += 1;
-    },
-    get value() {
+    };
+
+  const getCount = () => {
       return count;
-    },
-  };
+    };
+
+  return { increment, getCount };
 };
 
 const counter = createCounter();
 button.addEventListener("click", counter.increment); // just works</code></pre>
-  <p><code>count</code> is private by scope, not by convention — nothing outside the closure can reach it. And because <code>increment</code> doesn't read <code>this</code> at all, it behaves the same no matter how it's called or passed around.</p>
+  
+<p><code>count</code> is private by scope — nothing outside the closure can reach it. And because <code>increment</code> doesn't read <code>this</code> at all, it behaves the same no matter how it's called or passed around.</p>
 
-  <h2>Only need one? Skip the factory too</h2>
-  <p>use a <code>createCounter()</code>function when you need several independent counters. If you only need one or a singleton, the module itself is already that one shared scope and is a singleton</p>
+<p> Now its a small function that won't get extended or instantiated multiple times like a class would.</p>
+
+  <h2>Only need one?</h2>
+  <p>Use a <code>createCounter()</code>function when you need several independent counters. If you only need one or a singleton, the module itself is already that one shared scope and is a singleton</p>
   <pre><code>// counter.js
 let count = 0;
 

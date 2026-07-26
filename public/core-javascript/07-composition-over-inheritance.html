@@ -23,7 +23,7 @@
   <p class="crumb">Core JavaScript &middot; 7 of 10</p>
   <h1>Composition Over Inheritance</h1>
 
-  <p>Inheritance tends to end up with a base class with shared logic, subclasses overriding bits of it. It works, but each subclass's real behavior is scattered across multiple levels of <code>extends</code> you climb.</p>
+  <p>Inheritance ends up with a base class with shared logic and subclasses overriding bits of it. Therefore each subclass's real behavior is scattered across multiple classes and files.</p>
   <h2>The old way</h2>
   <pre><code>class BaseValidator {
   validate(value: string) {
@@ -36,7 +36,11 @@
 
 class EmailValidator extends BaseValidator {
   protected check(value: string) {
-    return super.check(value) && value.includes("@");
+    if (value.includes("@")) {
+      return super.check(value);
+    }
+
+    return false
   }
 }</code></pre>
 

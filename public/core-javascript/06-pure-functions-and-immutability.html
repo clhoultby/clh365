@@ -23,29 +23,55 @@
   <p class="crumb">Core JavaScript &middot; 6 of 10</p>
   <h1>Pure Functions and Immutability</h1>
 
-  <p>Shared namespaces made shared mutable state easy to reach for — everything lived on the same object, so mutating it in place felt natural:</p>
+  <p>Classes make shared mutable state easy to reach for — a method can read <code>this.something</code> instead of taking it as a parameter:</p>
   <h2>The old way</h2>
-  <pre><code>namespace Cart {
-  export function addDiscount(items: Item[], pct: number) {
+  <pre><code>class Cart {
+  constructor(discount: number) {
+    this.discount = discount;
+  }
+
+  private discount: number;
+
+  addDiscount(items: Item[]) {
     for (const item of items) {
-      item.price = item.price * (1 - pct); // mutates the caller's array
+      item.price = item.price * (1 - this.discount);
     }
     return items;
   }
-}</code></pre>
-  <p>Call this twice, or call it and then look at the original array elsewhere, and you get a bug that's hard to trace back — the input changed underneath its owner.</p>
+}
+
+const cart = new Cart(0.1);
+cart.addDiscount(items);</code></pre>
+
+  <h2>Remove hidden dependencies</h2>
+  <p><code>addDiscount(items)</code> doesn't show what discount it applies.  You have to look at <code>this.discount</code>, and any method on the class is may have changed it.</p> 
+  <p>Inheritance makes this harder - a subclass can override a method that changes <code>this.discount</code>, invisible at the call site.</p>
+  
+  <pre><code>class VipCart extends Cart {
+  applyLoyaltyBonus() {
+    this.discount += 0.05; // some unrelated method changes it
+  }
+}
+
+const cart = new VipCart(0.1);
+cart.applyLoyaltyBonus();
+cart.addDiscount(items); // which discount actually applies here?</code></pre>
+  <p>Finding the answer means reading every method in the hierarchy that might touch <code>this.discount</code>. Testing it means building a <code>Cart</code> into the right state first</p>
+  
+  <p> Instead call the function with and pass all values it depends on. </p>
 
   <h2>Return new data instead of mutating</h2>
-  <pre><code>export const addDiscount = (items, pct) => {
-  return items.map((item) => ({
-    ...item,
-    price: item.price * (1 - pct),
-  }));
+  <pre><code>export const addDiscount = (items, discount) => {
+  const result = [];
+  for (const item of items) {
+    result.push({ ...item, price: item.price * (1 - discount) });
+  }
+  return result;
 };
 
 const discounted = addDiscount(items, 0.1);
 // `items` is untouched; `discounted` is a new array</code></pre>
-  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is easy to reason about in isolation and safe to call from anywhere without worrying who else holds a reference to the same data. <code>map</code>, <code>filter</code>, and object/array spread are the everyday tools for this; reach for them before a <code>for</code> loop that mutates in place.</p>
+  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere, since nothing it touches can surprise another caller. The loop above never touches <code>items</code>; it pushes onto a fresh <code>result</code> array and returns that. A <code>for</code> loop is fine — the rule is build new data and return it, not avoid loops.</p>
 
   <nav class="pager">
     <a href="/core-javascript/05-functions-over-classes.html">&larr; Functions Over Classes</a>

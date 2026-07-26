@@ -31,8 +31,7 @@
   }
 }
 
-// usage, anywhere after this
-// script has loaded:
+// usage
 Utils.formatDate(new Date());</code></pre>
 
   <p>This relies on script load order: <code>Utils</code> has to exist as a global (or be merged across files via <code>/// &lt;reference&gt;</code>) before anything that uses it runs. Nothing in the file <em>declares</em> that dependency — you just have to know the right <code>&lt;script&gt;</code> order.</p>
