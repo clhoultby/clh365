@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Named, Default, and Re-exports</title>
+<title>Exports and Barrel Patterns</title>
 <style>
   :root { color-scheme: light dark; }
   body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
@@ -21,9 +21,9 @@
 <body>
   <p><a class="back" href="/">&larr; All material</a></p>
   <p class="crumb">Core JavaScript &middot; 9 of 9</p>
-  <h1>Named, Default, and Re-exports</h1>
+  <h1>Exports and Barrel Patterns</h1>
 
-  <p>A namespace exports everything inside it as members of one object. ES modules give you three finer-grained ways to expose things from a file, and the choice matters more than it looks.</p>
+  <p>ES modules give you three ways to expose things from a file.</p>
 
   <h2>Named exports</h2>
   <pre><code>// format.js
@@ -38,16 +38,23 @@ import { formatDate, formatCurrency } from "./format.js";</code></pre>
   <pre><code>// logger.js
 export default function (message) { /* ... */ };
 
-// usage — the name here is arbitrary
-import log from "./logger.js";
-import whatever from "./logger.js"; // same function, any name</code></pre>
-  <p>Reserve default exports for a file with one obvious main export (a single component, a single class). For anything else, prefer named exports — it keeps renames and auto-imports reliable.</p>
 
-  <h2>Re-exports (barrel files)</h2>
-  <pre><code>// index.js
-export * from "./format.js";
-export * from "./logger.js";</code></pre>
-  <p>This is the closest thing to how a namespace auto-aggregated its members — except here it's one explicit line per source file instead of implicit merging. Use it sparingly: a barrel that re-exports an entire folder can drag in every module in that folder just to use one function, and can create import cycles in a large app. Import directly from the source file unless the barrel earns its keep.</p>
+// usage
+import log from "./logger.js";
+import whatever from "./logger.js"; // with default exports you can call the function anything you like</code></pre>
+  <p>Only use default exports for a file with one obvious main export (a single component / single function). For anything else, use named exports</p>
+
+  <h2>Re-exports (barrel files) - index.js</h2>
+  <pre><code>// index.js — the folder's public surface
+export { formatDate, formatCurrency } from "./format.js";
+export { default as log } from "./logger.js";
+
+// ./format-internals.js is absent, so it isn't part of the API</code></pre>
+  <p>A barrel lists what a folder is willing to hand out. Anything left off it stays an implementation detail you can move or rewrite without checking who imported it.</p>
+
+  <p>Prefer <code>export { … } from</code> over <code>export *</code>. The wildcard re-exports whatever the source file happens to expose, so new exports join the public surface the moment someone adds them.</p>
+
+  <p>The barrel states the boundary; it doesn't enforce it — a consumer can still reach past it to <code>./format-internals.js</code>. That needs tooling: an ESLint <code>no-restricted-imports</code> rule, or the <code>exports</code> field in <code>package.json</code> for a published package.</p>
 
   <nav class="pager">
     <a href="/core-javascript/08-case-study-refactor.html">&larr; Case Study: Refactoring a Namespace Class</a>

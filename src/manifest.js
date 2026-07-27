@@ -39,15 +39,15 @@ export const paths = [
         "title": "Case Study: Refactoring a Namespace Class"
       },
       {
-        "path": "core-javascript/09-named-default-and-re-exports.html",
-        "title": "Named, Default, and Re-exports"
+        "path": "core-javascript/09-exports-and-barrel-patterns.html",
+        "title": "Exports and Barrel Patterns"
       }
     ]
   },
   {
     "slug": "react",
     "title": "React",
-    "description": "Connecting React to state it doesn't own — sharing a single source of truth with an existing framework via useSyncExternalStore.",
+    "description": "Crossframe work communication - useSyncExternalStore / delegate patterns",
     "order": 2,
     "lessons": [
       {
