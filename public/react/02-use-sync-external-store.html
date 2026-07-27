@@ -34,10 +34,10 @@ const CartBadge = () =&gt; {
   return &lt;span&gt;{cart.items.length}&lt;/span&gt;;
 };</code></pre>
 
-  <p>React subscribes on mount, unsubscribes on unmount, and re-reads the snapshot whenever a listener fires. It also re-reads before committing and restarts the render if the value moved, so every component reading the store in one commit sees the same value.</p>
+  <p>React Component subscribes in the render function and re-reads the snapshot whene the listener is fired by the store. It also re-reads before committing and restarts the render if the value moved, so every component reading the store in one commit sees the same value.</p>
 
-  <h2>Wrap it in a hook</h2>
-  <p>Both arguments should be stable references, so define them outside the component rather than inline:</p>
+  <h2>Implementation advice - Wrap it in a hook</h2>
+  <p>Suggest you define outside the component rather than inline and give more descriptive names:</p>
   <pre><code>// cart-hooks.js
 import { useSyncExternalStore } from "react";
 import { subscribe, getSnapshot } from "./cart-store.js";
@@ -49,7 +49,7 @@ export const useCartCount = () =&gt; {
 };</code></pre>
   <p>Components import <code>useCartCount</code> and never touch the store directly, so React's dependency on it is one hook in one file.</p>
 
-  <p>If the app server-renders, pass a third argument, <code>getServerSnapshot</code>, returning the value to use during SSR and hydration — the client store doesn't exist on the server.</p>
+<p> If the store snapshot contains more data than you need, you can use the hook to only return what you need.</p>
 
   <nav class="pager">
     <a href="/react/01-the-external-store.html">&larr; The External Store</a>

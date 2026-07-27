@@ -57,7 +57,7 @@ ${items}
 </style>
 </head>
 <body>
-  <h1>clh365 -- Training Material</h1>
+  <h1>Targeted Fundamentals</h1>
   <p class="sub">${paths.length} path${paths.length === 1 ? "" : "s"}, ${lessonCount} lesson${lessonCount === 1 ? "" : "s"}</p>
   ${
     paths.length
