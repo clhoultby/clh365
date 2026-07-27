@@ -1,5 +1,5 @@
 {
   "title": "React",
-  "description": "Connecting React to state it doesn't own — sharing a single source of truth with an existing framework via useSyncExternalStore.",
+  "description": "Crossframe work communication - useSyncExternalStore / delegate patterns",
   "order": 2
 }
