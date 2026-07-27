@@ -83,21 +83,35 @@ isEnabled(); // true</code></pre>
 ConfigService.getInstance().get("apiUrl");</code></pre>
 
 <h2>The new way</h2>
-  <p>A module already gives you exactly that guarantee, for free. A given module specifier is fetched, parsed, and evaluated once — every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app, no matter how many files ask for it, resolves to the same module record. There's no lazy-init check to write and no instance field to guard, because the module system already deduplicates by path.</p>
+  <p>A module already gives you single-instance behavior - a module is fetched, parsed, and evaluated once only.  Every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app resolves to the same module.</p>
   <pre><code>// config-service.js
-const settings = loadSettings();
+const defaults = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+};
 
-export const get = (key) => {
-  return settings[key];
+let config = { ...defaults };
+
+export const initialise = (state = {}) => {
+  config.timeout = state?.timeout || defaults.timeout;
+  config.apiUrl = state?.apiUrl || defaults.apiUrl;
+};
+
+export const getTimeout = () => {
+  return config.timeout;
 };
 
 
 
-// usage — every importer gets the same `settings`,
-// loaded exactly once, the first time any file imports this module
-import { get } from "./config-service.js";
+// usage — call once at startup; every importer shares the same `config`
+import { initialise, get } from "./config-service.js";
 
-get("apiUrl");</code></pre>
+initialise({ timeout: 10000 });
+get("apiUrl");  // "https://api.example.com" — untouched keys keep their default
+
+initialise();   // no argument — every key falls back to the defaults</code></pre>
+  <p>Passing state in keeps the module from reaching out for it at import time: a test can call <code>initialise({ timeout: 0 })</code> without whatever <code>loadSettings()</code> would have touched. Callers pass only the keys they're changing.</p>
+
   <p>The private constructor, the instance-guard <code>if</code>, and <code>getInstance()</code> all existed to compensate for classes not having module-level scope of their own. Once the module <em>is</em> the scope, that plumbing has nothing left to do.</p>
 
   <nav class="pager">
