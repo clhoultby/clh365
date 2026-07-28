@@ -44,11 +44,24 @@ class EmailValidator extends BaseValidator {
   }
 }</code></pre>
 
-  <h2>Compose small functions instead</h2>
-  <pre><code>const notEmpty = (value) => value.length > 0;
+  <h2>New way: Compose small functions instead</h2>
+
+<p>Use small, single-purpose functions and compose them together.  Prefer the guard clause pattern for early returns.</p>
+
+  <pre><code>const isEmpty = (value) => value.length === 0;
 const hasAt = (value) => value.includes("@");
 
-const isValidEmail = (value) => notEmpty(value) && hasAt(value);
+const isValidEmail = (value) => {
+  if (isEmpty(value)) {
+    return false;
+  }
+
+  if (!hasAt(value)) {
+    return false;
+  }
+
+  return true;
+};
 
 isValidEmail("a@b.com"); // true</code></pre>
   <p>Each function does one thing and can be tested and reused on its own. <code>isValidEmail</code> just calls the checks it needs and combines them with plain <code>&amp;&amp;</code> — no generic pipe/compose helper to reach for, no guessing what order functions run in or what shape they're expected to return. There's no hierarchy to climb to see what a given check actually does, and no risk of a subclass's override silently changing behavior a base class assumed elsewhere.</p>
