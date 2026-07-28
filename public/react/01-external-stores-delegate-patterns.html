@@ -115,7 +115,10 @@ export class CartController {
 }</code></pre>
 
 <h2>Architecture</h2>
-  <p>A module evaluates once and every importer resolves to that same evaluated module, so there is one <code>state</code> and one set of listeners for the whole app. Nothing has to be wired up to make both frameworks agree on which store they mean.</p>
+  
+<p>This should be a layout you are familiar with</p>
+
+<p>As per previous lessons - An ES Module evaluates once and every importer resolves that same module, so there is only one set of <code>state</code> and one set of listeners for the whole app.  No Singletons required.</p>
 
   <svg viewBox="0 0 640 320" role="img" aria-labelledby="diagram-title"
        style="display: block; width: 100%; height: auto; margin: 1.75rem 0; overflow: visible;">
