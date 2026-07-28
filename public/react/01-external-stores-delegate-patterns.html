@@ -81,7 +81,7 @@ export const addItem = (item) =&gt; {
   <h2>Note: Replace state, don't mutate it</h2>
   <p>React compares the previous snapshot to the new one with <code>Object.is</code>. Pushing into <code>state.items</code> leaves the reference identical, so React concludes nothing happened and skips the re-render — hence the new object and new array in <code>addItem</code>.</p>
 
-  <h2>Both sides use the same module</h2>
+  <h2>Custom Framework Usage</h2>
   <p>Nothing above imports React, so the framework you're migrating from can communicate with the store directly:</p>
   <pre><code>// cart-controller.ts
 import { store } from "./cart-store.js";
