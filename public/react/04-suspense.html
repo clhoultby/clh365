@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suspense</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">React &middot; 4 of 5</p>
+  <h1>Suspense</h1>
+
+  <p><code>Suspense</code> is a used to wrap anything inside it that isn't ready yet.  It relies on a Promise resolving to render the component or rejecting to show an error</p>
+  <p>This could be:
+    <ul>
+      <li><code>lazy()</code> component that is still downloading</li>
+      <li>a component doing an API <code>fetch</code></li>
+      <li>a component awaiting a <code> subscription</code></li>
+    </ul>
+  </p>
+  <p>Until the Promise resolves, React renders the <code>fallback</code> in its place until the wait is over:</p>
+
+
+  <h2>Usage</h2>
+  <p>Wrap the lazy component in a <code>Suspense</code> and provide a fallback UI, e.g. a spinner or skeleton, to show while the lazy component is loading.
+
+  <pre><code>import { Suspense, lazy } from "react";
+
+const OfferBanner = lazy(() =&gt; import("@path/to/component/OfferBanner"));
+
+return (
+  &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+    &lt;OfferBanner /&gt;
+  &lt;/Suspense&gt;
+);</code></pre>
+
+
+
+  <nav class="pager">
+    <a href="/react/03-lazy-loading-components.html">&larr; Lazy Loading Components</a>
+    <a href="/react/05-error-boundaries.html">Error Boundaries &rarr;</a>
+  </nav>
+</body>
+</html>

@@ -57,6 +57,18 @@ export const paths = [
       {
         "path": "react/02-use-sync-external-store.html",
         "title": "useSyncExternalStore"
+      },
+      {
+        "path": "react/03-lazy-loading-components.html",
+        "title": "Lazy Loading Components"
+      },
+      {
+        "path": "react/04-suspense.html",
+        "title": "Suspense"
+      },
+      {
+        "path": "react/05-error-boundaries.html",
+        "title": "Error Boundaries"
       }
     ]
   }
