@@ -23,8 +23,11 @@
   <p class="crumb">React &middot; 1 of 5</p>
   <h1>External Stores / Delegate Patterns</h1>
 
-  <p>An external store is a plain JavaScript object that holds state and notifies listeners when it changes. Its very similar to the delegate pattern / manager pattern you may be familiar with.</p>
-  <p>This pattern can be used for sharing state between React Components and other frameworks, or between multiple React components.</p>
+  <p>An external store is a plain JavaScript object that holds state and notifies listeners when it changes.</p>
+  <p>This pattern is very similar to the delegate pattern / manager pattern you may be familiar with.</p>
+  
+  <h2>Usage</h2>
+  <p>Stores are used for sharing state between React Components and other frameworks, or between multiple React components.</p>
 
   <p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes, one to read the current value.</p>
 
@@ -65,11 +68,11 @@ export const addItem = (item) =&gt; {
 
   <p><code>subscribe</code> returns its own unsubscribe function, which is how React cleans up on unmount without the store knowing React exists.</p>
 
-  <h2>Replace state, don't mutate it</h2>
+  <h2>Note: Replace state, don't mutate it</h2>
   <p>React compares the previous snapshot to the new one with <code>Object.is</code>. Pushing into <code>state.items</code> leaves the reference identical, so React concludes nothing happened and skips the re-render — hence the new object and new array in <code>addItem</code>.</p>
 
   <h2>Both sides use the same module</h2>
-  <p>Nothing above imports React, so the framework you're migrating from can drive the store directly:</p>
+  <p>Nothing above imports React, so the framework you're migrating from can communicate with the store directly:</p>
   <pre><code>// cart-controller.ts
 import { store } from "./cart-store.js";
 
