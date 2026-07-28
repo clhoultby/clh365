@@ -60,9 +60,12 @@ const CartBadge = () =&gt; {
   <p>Suggest you define outside the component rather than inline and give more descriptive names:</p>
   <pre><code>// cart-hooks.js
 import { useSyncExternalStore } from "react";
-import { storet } from "./cart-store.js";
+import { store } from "./cart-store.js";
 
-const getCount = () =&gt; store.getSnapshot().items.length;
+const getCount = () =&gt; {
+  const snapshot = store.getSnapshot() as { items: CartItem[] };
+  return snapshot.items.length;
+}
 
 export const useCartCount = () =&gt; {
   return useSyncExternalStore(store.subscribe, getCount);
