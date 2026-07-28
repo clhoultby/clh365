@@ -28,7 +28,7 @@
   <center><h4>Note: each file is its own ES Module</h4></center>   
 
   <h2>The old way</h2>
-  <p>With a class, state belongs to an instance, so sharing it means making sure every caller gets the <em>same</em> instance:</p>
+  <p>With a class, state belongs to an instance, so if we want singleton state, we have to have extra code to it making sure every caller gets the <em>same</em> instance:</p>
   <pre><code>export class ApiClient {
   private cache = new Map&lt;string, Response&gt;();
 
