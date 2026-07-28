@@ -84,7 +84,7 @@ isEnabled(); // true</code></pre>
 ConfigService.getInstance().get("apiUrl");</code></pre>
 
 <h2>The new way</h2>
-    Every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app resolves to the same module.</p>
+    Every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app resolves to the same module.  Its is a singleton by default.</p>
   <pre><code>// config-service.js
 
 const defaults = {
