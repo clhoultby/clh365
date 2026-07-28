@@ -54,10 +54,11 @@ const CartBadge = () =&gt; {
   return &lt;span&gt;{cart.items.length}&lt;/span&gt;;
 };</code></pre>
 
-  <p>React Component subscribes in the render function and gets the latest snapshot when the listener is fired by the store. </p>
+  <p>React Component subscribes in the render function.  When something updates the store (calls store.addItem) and the store notifies subscribers, the component gets the latest state via the <code>getSnapshot</code> function.</p>
 
   <h2>Implementation advice - Wrap it in a hook</h2>
-  <p>Suggest you define outside the component rather than inline and give more descriptive names:</p>
+  <p>Create a custom hook that wraps the <code>useSyncExternalStore</code>.  Create pure functions outside the hook to formatt the data from the store, if needed.</p>
+  <p>This way, your React Components don't have to know about the store implementation.</p>
   <pre><code>// cart-hooks.js
 import { useSyncExternalStore } from "react";
 import { store } from "./cart-store.js";
@@ -72,7 +73,6 @@ export const useCartCount = (): number => {
   return useSyncExternalStore(store.subscribe, getCount);
 };</code></pre>
   
-<p>If the store snapshot contains more data than you need, you can use the hook to only return what the component cares about.</p>
 
 <p>React Components import <code>useCartCount</code> and never touch the store directly.</p>
 
