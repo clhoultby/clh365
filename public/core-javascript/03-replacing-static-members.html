@@ -40,8 +40,8 @@
 FeatureFlag.enable();
 FeatureFlag.isEnabled(); // true</code></pre>
 
-  <h2>New way: A module is already a shared instance</h2>
-  <p>A module's top-level code runs once, the first time it's imported, and every importer shares the same module. There's no need for a class or the <code>static</code> keyword to get "one shared instance" — that's just what a module is.</p>
+  <h2>New way - A module is already shared</h2>
+  <p>A module's top-level code runs once the first time it's imported, and every importer shares the same module. Theres no 'instance' of a module — it's just a single shared instance.</p>
   <pre><code>// feature-flag.js
 let enabled = false;
 
@@ -58,7 +58,8 @@ import { enable, isEnabled } from "./feature-flag.js";
 
 enable();
 isEnabled(); // true</code></pre>
-  <p>Here <code>enabled</code> is also private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field unless you deliberately export it. If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it</p>
+  <p><code>enabled</code> is private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field</p>
+  <p>If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it</p>
 
   <h2>Singletons - old way</h2>
   <p>The singleton pattern — a private constructor plus a static <code>getInstance()</code> — exists to guarantee exactly one instance no matter how many places ask for it:</p>
