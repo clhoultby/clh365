@@ -26,7 +26,11 @@
 <p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes & one to retrieve the current state of the store.</p>
 
   <pre><code>function useSyncExternalStore&lt;Snapshot&gt;(
+  
+    // function to trigger a re-render when the store changes
   subscribe: (onStoreChange: () =&gt; void) =&gt; () =&gt; void,
+  
+  // function to get the current state of the store
   getSnapshot: () =&gt; Snapshot,
 ): Snapshot;</code></pre>
 
