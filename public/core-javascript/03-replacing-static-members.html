@@ -113,11 +113,7 @@ export const getUrl = () => {
 import config from "./config-service.js"; // every importer gets the same config
 
 config.initialise({ timeout: 10000 });
-
-// will get the value passed above
 config.getTimeout(); /// 10000
-
-// will get the default
 config.getUrl();  // "https://api.example.com"
 
 initialise();   // no argument — every key falls back to the defaults</code></pre>
