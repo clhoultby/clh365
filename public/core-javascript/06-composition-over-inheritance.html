@@ -64,7 +64,8 @@ const isValidEmail = (value) => {
 };
 
 isValidEmail("a@b.com"); // true</code></pre>
-  <p>Each function does one thing and can be tested and reused on its own. <code>isValidEmail</code> just calls the checks it needs and combines them with plain <code>&amp;&amp;</code> — no generic pipe/compose helper to reach for, no guessing what order functions run in or what shape they're expected to return. There's no hierarchy to climb to see what a given check actually does, and no risk of a subclass's override silently changing behavior a base class assumed elsewhere.</p>
+  <p>Each function does one thing and can be tested and reused on its own. 
+    <code>isValidEmail</code> calls the checks it needs and combines them in completely visible way. There's no hierarchy hiding what a method actually does, and no risk of a subclass's override silently changing behavior</p>
 
   <nav class="pager">
     <a href="/core-javascript/05-pure-functions-and-immutability.html">&larr; Pure Functions and Immutability</a>
