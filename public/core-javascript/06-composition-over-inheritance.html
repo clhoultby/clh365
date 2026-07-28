@@ -48,10 +48,9 @@ class EmailValidator extends BaseValidator {
 
 <p>Use small, single-purpose functions and compose them together.  Prefer the guard clause pattern for early returns.</p>
 
-  <pre><code>
-const isEmpty = (value) => value.length === 0;
-
+  <pre><code>const isEmpty = (value) => value.length === 0;
 const hasAt = (value) => value.includes("@");
+
 
 const isValidEmail = (value) => {
   if (isEmpty(value)) {
