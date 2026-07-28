@@ -47,15 +47,19 @@ let state = {
 // listeners is a list of functions (or 'delegates') to call when the state changes
 const listeners = new Set();
 
-// 'AddDelegate'
+
+// 'store.addDelegate'
 export const subscribe = (listener) =&gt; {
   listeners.add(listener);
   return () =&gt; listeners.delete(listener);
 };
 
+
+// called by React or the custom framework to get the current state
 export const getSnapshot = () =&gt; {
   return state;
 };
+
 
 // called from anywhere - React or the custom framework 
 export const addItem = (item) =&gt; {
