@@ -23,7 +23,7 @@
   <p class="crumb">Core JavaScript &middot; 1 of 9</p>
   <h1>Module Scope</h1>
 
-  <p>A ES Module's top-level code runs once. The first <code>import</code> of a file evaluates it; every later import of that same file resolves to the module that was already evaluated. Top-level bindings are therefore shared by every importer, not recreated per import.</p>
+  <p>A ES Module's top-level code runs once. The first <code>import</code> of a file evaluates it; every later import of that same file resolves to the module that was already evaluated. Top-level state and functions are therefore shared by every importer, not recreated each time.</p>
 
   <p><b>To state clearly: each file is its own ES Module</b></p>
 
