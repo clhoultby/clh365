@@ -23,7 +23,12 @@
   <p class="crumb">React &middot; 2 of 5</p>
   <h1>useSyncExternalStore</h1>
 
-<p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes & one to retrieve the current state of the store.</p>
+<p><code>useSyncExternalStore</code> asks for two functions: 
+  <ul>
+    <li>one to subscribe to changes</li>
+    <li>one to retrieve the current state of the store</li>
+</ul>
+</p>
 
   <pre><code>function useSyncExternalStore&lt;Snapshot&gt;(
   
@@ -32,6 +37,7 @@
   
   // function to get the current state of the store
   getSnapshot: () =&gt; Snapshot,
+
 ): Snapshot;</code></pre>
 
 <p>Note here, Snapshot is the state returned by the store. This is just a Javascript Object.</p>
@@ -40,7 +46,7 @@
 <h2>Usage</h2>
 
 <pre><code>import { useSyncExternalStore } from "react";
-import { store} from "./cart-store.js";
+import { store } from "./cart-store.js";
 
 const CartBadge = () =&gt; {
   const cart = useSyncExternalStore(store.subscribe, store.getSnapshot);
@@ -54,12 +60,12 @@ const CartBadge = () =&gt; {
   <p>Suggest you define outside the component rather than inline and give more descriptive names:</p>
   <pre><code>// cart-hooks.js
 import { useSyncExternalStore } from "react";
-import { subscribe, getSnapshot } from "./cart-store.js";
+import { storet } from "./cart-store.js";
 
-const getCount = () =&gt; getSnapshot().items.length;
+const getCount = () =&gt; store.getSnapshot().items.length;
 
 export const useCartCount = () =&gt; {
-  return useSyncExternalStore(subscribe, getCount);
+  return useSyncExternalStore(store.subscribe, getCount);
 };</code></pre>
   <p>Components import <code>useCartCount</code> and never touch the store directly, so React's dependency on it is one hook in one file.</p>
 
