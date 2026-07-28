@@ -58,7 +58,7 @@ import { enable, isEnabled } from "./feature-flag.js";
 
 enable();
 isEnabled(); // true</code></pre>
-  <p><code>enabled</code> is private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field</p>
+  <p>Because <code>enabled</code> is not exported, it is private by scopes — there's no equivalent of a <em>public</em> static field</p>
   <p>If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it</p>
 
   <h2>Singletons - old way</h2>
