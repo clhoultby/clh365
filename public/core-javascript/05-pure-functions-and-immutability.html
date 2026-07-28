@@ -75,7 +75,9 @@ cart.addDiscount(items); // which discount actually applies here?</code></pre>
 
 const discounted = addDiscount(items, 0.1);
 // `items` is untouched; `discounted` is a new array</code></pre>
-  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere, since nothing it touches can surprise another caller. The loop above never touches <code>items</code>; it pushes onto a fresh <code>result</code> array and returns that. A <code>for</code> loop is fine — the rule is build new data and return it, not avoid loops.</p>
+  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere, any number of times, since its not mutating the things passed in.</p> 
+  <p>For non-primitive types, Javascript is Pass-by-Reference so modifying the passed-in data affects the original. This is a **** to debug.  So just don't do it.</p>
+  <p>In the example above, the loop never touches <code>items</code>; it pushes onto a fresh <code>result</code> array and returns that.</p>
 
   <nav class="pager">
     <a href="/core-javascript/04-functions-over-classes.html">&larr; Functions Over Classes</a>
