@@ -44,7 +44,11 @@ let state = {
   items: []
 };
 
-// listeners is a list of functions (or 'delegates') to call when the state changes
+
+/**
+ * listeners is a list of functions (or 'delegates') 
+ * to call when the state changes
+ */
 const listeners = new Set();
 
 
@@ -73,7 +77,9 @@ export const addItem = (item) =&gt; {
   state = { ...state, items: [...state.items, item] };
   
   // notify all 'delegates' that the state has changed
-  listeners.forEach((listener) =&gt; listener());
+  for (const listener of listeners) {
+    listener();
+  }
 };</code></pre>
 
   <p><code>subscribe</code> returns its own unsubscribe function, which is how React cleans up on unmount without the store knowing React exists.</p>
