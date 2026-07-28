@@ -116,7 +116,7 @@ config.initialise({ timeout: 10000 });
 config.getTimeout(); /// 10000
 config.getUrl();  // "https://api.example.com"
 
-initialise();   // no argument — every key falls back to the defaults</code></pre>
+</code></pre>
   <p>Passing state in keeps the module from reaching out for it at import time: a test can call <code>initialise({ timeout: 0 })</code> without whatever <code>loadSettings()</code> would have touched. Callers pass only the keys they're changing.</p>
 
 
