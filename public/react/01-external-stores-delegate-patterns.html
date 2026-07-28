@@ -50,8 +50,13 @@ const listeners = new Set();
 
 // 'store.addDelegate'
 export const subscribe = (listener) =&gt; {
+  
   listeners.add(listener);
-  return () =&gt; listeners.delete(listener);
+  
+  // unsubscribe func to be called by react or by custom framework on dispose
+  return () =&gt; {
+    listeners.delete(listener);
+  }
 };
 
 
@@ -63,6 +68,7 @@ export const getSnapshot = () =&gt; {
 
 // called from anywhere - React or the custom framework 
 export const addItem = (item) =&gt; {
+  
   // update the state
   state = { ...state, items: [...state.items, item] };
   
