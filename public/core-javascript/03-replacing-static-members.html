@@ -40,7 +40,7 @@
 FeatureFlag.enable();
 FeatureFlag.isEnabled(); // true</code></pre>
 
-  <h2>A module is already a shared instance</h2>
+  <h2>New way: A module is already a shared instance</h2>
   <p>A module's top-level code runs once, the first time it's imported, and every importer shares the same module. There's no need for a class or the <code>static</code> keyword to get "one shared instance" — that's just what a module is.</p>
   <pre><code>// feature-flag.js
 let enabled = false;
