@@ -72,7 +72,7 @@ export const useCartCount = (): number => {
   return useSyncExternalStore(store.subscribe, getCount);
 };</code></pre>
   
-<p>If the store snapshot contains more data than you need, you can use the hook to only return what you need.</p>
+<p>If the store snapshot contains more data than you need, you can use the hook to only return what the component cares about.</p>
 
 <p>React Components import <code>useCartCount</code> and never touch the store directly.</p>
 
