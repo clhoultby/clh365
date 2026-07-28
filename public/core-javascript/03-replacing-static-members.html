@@ -92,7 +92,7 @@ const defaults = {
 };
 
 
-// recommend you have a function that intialises the state, improves testing
+// export a function that intialises the state
 export const initialise = (state = {}) => {
   config.timeout = state?.timeout || defaults.timeout;
   config.apiUrl = state?.apiUrl || defaults.apiUrl;
@@ -103,12 +103,13 @@ export const getTimeout = () => {
 };
 
 export const getUrl = () => {
-
+  return config.apiUrl;
 };
 
 
-// usage - every importer gets the same config
-import config from "./config-service.js";
+// usage
+
+import config from "./config-service.js"; // every importer gets the same config
 
 config.initialise({ timeout: 10000 });
 
