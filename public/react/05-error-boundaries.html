@@ -26,7 +26,7 @@
   <p>An error thrown during the React render cycle propagates up until something catches it. If nothing does, React unmounts the whole tree from the root </p>
   <p>Therefore an error in one React Component can take down the <b>entire page</b>, not just the banner. 
     
-    <p error boundary limits the tear down and has error logging and stack parsing built in.  Use them at module boundaries, or specific Component boundaries</p>
+    <p><code>&lt;ErrorBoundary&gt;</code> limits the tear down and has error logging and stack parsing built in.  Use them at module boundaries, or specific Component boundaries</p>
 
   
   <h2>Usage</h2>

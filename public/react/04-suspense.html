@@ -23,7 +23,7 @@
   <p class="crumb">React &middot; 4 of 5</p>
   <h1>Suspense</h1>
 
-  <p><code>Suspense</code> is a used to wrap anything inside it that isn't ready yet.  It relies on a Promise resolving to render the component or rejecting to show an error</p>
+  <p><code>&lt;Suspense&gt;</code> is a used to wrap anything inside it that isn't ready yet.  It relies on a Promise resolving to render the component or rejecting to show an error</p>
   <p>This could be:
     <ul>
       <li><code>lazy()</code> component that is still downloading</li>
@@ -35,7 +35,7 @@
 
 
   <h2>Usage</h2>
-  <p>Wrap the lazy component in a <code>Suspense</code> and provide a fallback UI, e.g. a spinner or skeleton, to show while the lazy component is loading.
+  <p>Wrap the lazy component in a <code>&lt;Suspense&gt;</code> and provide a fallback UI, e.g. a spinner or skeleton, to show while the lazy component is loading for a seamless user experience.</p>
 
   <pre><code>import { Suspense, lazy } from "react";
 
