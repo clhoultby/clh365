@@ -43,7 +43,7 @@
 const cart = new Cart(0.1);
 cart.addDiscount(items);</code></pre>
 
-  <h2>Remove hidden dependencies</h2>
+  <h2>Pass everything into a function</h2>
   <p><code>addDiscount(items)</code> doesn't show what discount it applies.  You have to look at <code>this.discount</code>, and any method on the class is may have changed it.</p> 
   <p>Inheritance makes this harder - a subclass can override a method that changes <code>this.discount</code>, invisible at the call site.</p>
   

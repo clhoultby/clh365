@@ -34,7 +34,7 @@ const CartBadge = () =&gt; {
   return &lt;span&gt;{cart.items.length}&lt;/span&gt;;
 };</code></pre>
 
-  <p>React Component subscribes in the render function and re-reads the snapshot whene the listener is fired by the store. It also re-reads before committing and restarts the render if the value moved, so every component reading the store in one commit sees the same value.</p>
+  <p>React Component subscribes in the render function and re-reads the snapshot when the listener is fired by the store. It also re-reads before committing and restarts the render if the value moved, so every component reading the store in one commit sees the same value.</p>
 
   <h2>Implementation advice - Wrap it in a hook</h2>
   <p>Suggest you define outside the component rather than inline and give more descriptive names:</p>

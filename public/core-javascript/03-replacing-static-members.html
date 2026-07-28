@@ -58,9 +58,9 @@ import { enable, isEnabled } from "./feature-flag.js";
 
 enable();
 isEnabled(); // true</code></pre>
-  <p>Here <code>enabled</code> is also private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field unless you deliberately export it. If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it, rather than exporting the mutable <code>let</code> binding directly.</p>
+  <p>Here <code>enabled</code> is also private by scope, the same way state was private-by-closure in the previous lesson — there's no equivalent of a <em>public</em> static field unless you deliberately export it. If you did want <code>enabled</code> itself readable from outside, you'd export a function that returns it</p>
 
-  <h2>The same goes for singletons</h2>
+  <h2>Singletons - old way</h2>
   <p>The singleton pattern — a private constructor plus a static <code>getInstance()</code> — exists to guarantee exactly one instance no matter how many places ask for it:</p>
   <h2>The old way</h2>
   <pre><code>class ConfigService {
@@ -83,15 +83,16 @@ isEnabled(); // true</code></pre>
 ConfigService.getInstance().get("apiUrl");</code></pre>
 
 <h2>The new way</h2>
-  <p>A module already gives you single-instance behavior - a module is fetched, parsed, and evaluated once only.  Every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app resolves to the same module.</p>
+    Every <code>import</code> of <code>"./config-service.js"</code> anywhere in the app resolves to the same module.</p>
   <pre><code>// config-service.js
+
 const defaults = {
   apiUrl: "https://api.example.com",
   timeout: 5000,
 };
 
-let config = { ...defaults };
 
+// recommend you have a function that intialises the state, improves testing
 export const initialise = (state = {}) => {
   config.timeout = state?.timeout || defaults.timeout;
   config.apiUrl = state?.apiUrl || defaults.apiUrl;
@@ -101,18 +102,25 @@ export const getTimeout = () => {
   return config.timeout;
 };
 
+export const getUrl = () => {
+
+};
 
 
-// usage — call once at startup; every importer shares the same `config`
-import { initialise, get } from "./config-service.js";
+// usage - every importer gets the same config
+import config from "./config-service.js";
 
-initialise({ timeout: 10000 });
-get("apiUrl");  // "https://api.example.com" — untouched keys keep their default
+config.initialise({ timeout: 10000 });
+
+// will get the value passed above
+config.getTimeout(); /// 10000
+
+// will get the default
+config.getUrl();  // "https://api.example.com"
 
 initialise();   // no argument — every key falls back to the defaults</code></pre>
   <p>Passing state in keeps the module from reaching out for it at import time: a test can call <code>initialise({ timeout: 0 })</code> without whatever <code>loadSettings()</code> would have touched. Callers pass only the keys they're changing.</p>
 
-  <p>The private constructor, the instance-guard <code>if</code>, and <code>getInstance()</code> all existed to compensate for classes not having module-level scope of their own. Once the module <em>is</em> the scope, that plumbing has nothing left to do.</p>
 
   <nav class="pager">
     <a href="/core-javascript/02-closures-instead-of-classes.html">&larr; Closures Instead of Classes</a>
