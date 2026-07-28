@@ -29,12 +29,6 @@
   <h2>Usage</h2>
   <p>Stores are used for sharing state between React Components and other frameworks, or between multiple React components.</p>
 
-  <p><code>useSyncExternalStore</code> asks for two functions: one to subscribe to changes, one to read the current value.</p>
-
-  <pre><code>function useSyncExternalStore&lt;Snapshot&gt;(
-  subscribe: (onStoreChange: () =&gt; void) =&gt; () =&gt; void,
-  getSnapshot: () =&gt; Snapshot,
-): Snapshot;</code></pre>
 
 <h2>The Store (or 'The Manager')</h2>
   <pre><code>// cart-store.js
