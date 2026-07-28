@@ -32,16 +32,18 @@
     import { lazy } from "react";
     import { LazyWrapper } from "@path/to/LazyWrapper";
 
-    // wrap the import in a lazy() call, and wrap the component in a <LazyWrapper> to show a fallback while loading
     const OfferBanner = lazy(() =&gt; import("@path/to/component/OfferBanner"));
 
-
-    return (
-      &lt;LazyWrapper fallback={Skeleton}&gt;
-        &lt;OfferBanner /&gt;
-      &lt;/LazyWrapper&gt;
-    );
-
+    const MyPage = () =&gt; {
+      
+      // render logic 
+      
+      return (
+        &lt;LazyWrapper fallback={Skeleton}&gt;
+          &lt;OfferBanner /&gt;
+        &lt;/LazyWrapper&gt;
+      );
+    } 
     </code></pre>
 
   <nav class="pager">
