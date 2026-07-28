@@ -51,8 +51,8 @@ export const paths = [
     "order": 2,
     "lessons": [
       {
-        "path": "react/01-the-external-store.html",
-        "title": "The External Store"
+        "path": "react/01-external-stores-delegate-patterns.html",
+        "title": "External Stores / Delegate Patterns"
       },
       {
         "path": "react/02-use-sync-external-store.html",
