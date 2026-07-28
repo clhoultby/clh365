@@ -35,9 +35,10 @@
 }
 
 MathUtils.square(4);</code></pre>
-  <p>Nothing here needs an instance, inheritance, or <code>instanceof</code> — it's grouping for grouping's sake. A module already groups related code; you don't need a class on top of it.</p>
+<h2>New way - Just export functions</h2>
+<p>Nothing here needs an instance, inheritance, or <code>instanceof</code>. A module already groups related code</p>
 
-  <pre><code>// math-utils.js
+<pre><code>// math-utils.js
 
 export const square = (n) => {
   return n * n;
@@ -52,8 +53,6 @@ export const clamp = (n, min, max) => {
 // usage
 import { square } from "./math-utils.js";
 square(4);</code></pre>
-
-  <p>This isn't "classes are bad" — reach for one when you genuinely have many instances, need <code>instanceof</code> checks, or want prototype-based method sharing for performance. The test is: does anything here actually vary per instance? If not, it's functions in a module.</p>
 
   <nav class="pager">
     <a href="/core-javascript/03-replacing-static-members.html">&larr; Replacing Static Members and Singletons</a>
