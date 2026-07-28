@@ -62,12 +62,13 @@ const CartBadge = () =&gt; {
 import { useSyncExternalStore } from "react";
 import { store } from "./cart-store.js";
 
-const getCount = () =&gt; {
+// returns the number of items in the cart
+const getCount = (): number => {
   const snapshot = store.getSnapshot() as { items: CartItem[] };
   return snapshot.items.length;
 }
 
-export const useCartCount = () =&gt; {
+export const useCartCount = (): number => {
   return useSyncExternalStore(store.subscribe, getCount);
 };</code></pre>
   
