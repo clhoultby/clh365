@@ -40,15 +40,10 @@
   }
 }</code></pre>
 
-  <p>Nothing enforces that. Two files can each construct one and quietly get separate caches:</p>
-  <pre><code>// file-a.ts
-const client = new ApiClient();
 
-// file-b.ts
-const client = new ApiClient(); // its own cache — no error, no warning</code></pre>
 
   <h2>The new way</h2>
-  <p>Move the state to the top level of a module and the sharing is structural — <code>cache</code> is created once, when the module first evaluates:</p>
+  <p>Move the state to the top level of a module and the <code>cache</code> is created once, when the module first evaluates:</p>
   <pre><code>// api-client.js
 const cache = new Map();
 
