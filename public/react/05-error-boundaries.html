@@ -30,7 +30,8 @@
 
   
   <h2>Usage</h2>
-  <p>Everything inside the boundary is replaced by the fallback, so the boundary marks how much UI you're willing to lose. Consider a Pod that fails to load — it is much better to lose the Pod than the whole page.</p>
+  <p>Everything inside the boundary is replaced by the fallback, so the boundary marks how much UI you're willing to lose.</p> 
+  <p>Consider a Pod that fails to load — it is much better to lose the Pod than the whole page.</p>
 
   <pre><code>&lt;ErrorBoundary fallback={&lt;OfferUnavailable /&gt;}&gt;
   &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
