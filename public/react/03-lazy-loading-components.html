@@ -24,10 +24,8 @@
   <h1>Lazy Loading Components</h1>
 
 <p>React supports lazy loading components with <code>React.lazy()</code> and <code>Suspense</code>. The <code>lazy()</code> function returns a promise and will resolve when the component has been downloaded.</p>  
-  
-  <p>LazyWrapper wraps the lazy component in a Suspense and ErrorBoundary automatically.  See the next two sections for more details on these.</p>
 
-<p>LazyWrapper protects against errors in the lazy component from tearing down the entire page.</p>
+<p>LazyWrapper protects against errors in the lazy component from tearing down the entire page by adding a Suspense and ErrorBoundary automatically. See the next two sections for more details on these.</p>
 
 
   <pre><code>
