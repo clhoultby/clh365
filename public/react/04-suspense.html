@@ -41,11 +41,14 @@
 
 const OfferBanner = lazy(() =&gt; import("@path/to/component/OfferBanner"));
 
-return (
-  &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
-    &lt;OfferBanner /&gt;
-  &lt;/Suspense&gt;
-);</code></pre>
+  const MyPage = () =&gt; {
+    // render logic
+    return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+        &lt;OfferBanner /&gt;
+    &lt;/Suspense&gt;
+  );
+};</code></pre>
 
 
 
