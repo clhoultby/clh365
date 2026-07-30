@@ -75,9 +75,13 @@ cart.addDiscount(items); // which discount actually applies here?</code></pre>
 
 const discounted = addDiscount(items, 0.1);
 // `items` is untouched; `discounted` is a new array</code></pre>
-  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere, any number of times, since its not mutating the things passed in.</p> 
-  <p>For non-primitive types, Javascript is Pass-by-Reference so modifying the passed-in data affects the original. This is a **** to debug.  So just don't do it.</p>
+  <p>A function that only reads its inputs and returns a new value — a <strong>pure function</strong> — is safe to call from anywhere and safe to call any number of times.</p> 
   <p>In the example above, the loop never touches <code>items</code>; it pushes onto a fresh <code>result</code> array and returns that.</p>
+  
+  <h2>Personal Story</h2>
+  <p>For non-primitive types, Javascript is Pass-by-Reference so modifying the passed-in data affects the original. This is a **** to debug.  So just don't do it.</p>
+  <p> I once broke a global time manager across the entire application in a popular horse favouriting feature by setting an object reference to null in the dispose func</p>
+  
 
   <nav class="pager">
     <a href="/core-javascript/04-functions-over-classes.html">&larr; Functions Over Classes</a>
