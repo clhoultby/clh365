@@ -48,7 +48,7 @@
     return null;
   }
 }</code></pre>
-  <p>Where conditions are nested blocks, differentiating the failure handling from the happy path can be difficult and where something dipped into the failure handling can occur far from the condition that caused it.</p>
+  <p>Differentiating the failure handling from the happy path can be difficult. Working out what condition caused the code to enter the failure handling can be a nightmare as the condition that caused it can be no where near to the error handling.</p>
 
   <h2>The new way</h2>
   <pre><code>export const submit = (order, customer, gateway, log) => {
@@ -72,9 +72,10 @@
 
   return gateway.charge(order);
 };</code></pre>
-  <p>Each rule is a flat block that states the condition and its consequence together. The happy path is the last line, and not nested.</p>
+  <p>Each rule is a single block that states the condition and its consequence together. The happy path is the last line, and not nested.</p>
 
-  <p>Note the inverted conditions. A guard tests for the case you want to reject, so <code>if (order.items.length > 0)</code> becomes <code>if (order.items.length === 0)</code>.</p>
+  <p>Note the inverted conditions. Test for the case you want to <b>reject</b></p>
+  <p>so <code>if (order.items.length > 0)</code> becomes <code>if (order.items.length === 0)</code>.</p>
 
 
   <h2>Guards over else</h2>
@@ -86,13 +87,13 @@ if (!user) {
   return user.name;
 }
 
-// the first condition has already exited, so the else is unnecessary
+// the first condition has already exited, 
+//so the else is unnecessary
 if (!user) {
   return "anonymous";
 }
 
 return user.name;</code></pre>
-  <p>An <code>if</code>/<code>else</code> asks you to hold both branches in your head until you find out which one you're in. A guard closes its case and stops mattering.</p>
 
   <h2>Guard Clauses in Loops</h2>
   <p>Apply the same for loops, where <code>continue</code> is the guard:</p>
