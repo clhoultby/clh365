@@ -41,6 +41,10 @@ export const paths = [
       {
         "path": "core-javascript/09-exports-and-barrel-patterns.html",
         "title": "Exports and Barrel Patterns"
+      },
+      {
+        "path": "core-javascript/10-guard-clauses.html",
+        "title": "Guard Clauses"
       }
     ]
   },

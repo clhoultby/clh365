@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guard Clauses</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Core JavaScript &middot; 10 of 10</p>
+  <h1>Guard Clauses</h1>
+
+  <p>I really strongly advise using guard clauses.  We have all seen code like this:</p>
+
+  <h2>The old way</h2>
+  <pre><code>class OrderService {
+  submit(order: Order): Receipt | null {
+    if (order) {
+      if (order.items.length > 0) {
+        if (this.customer.isVerified) {
+          if (order.total &lt;= this.customer.creditLimit) {
+            return this.gateway.charge(order);
+          } else {
+            this.log("over limit");
+            return null;
+          }
+        } else {
+          this.log("unverified");
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
+}</code></pre>
+  <p>Where conditions are nested blocks, differentiating the failure handling from the happy path can be difficult and where something dipped into the failure handling can occur far from the condition that caused it.</p>
+
+  <h2>The new way</h2>
+  <pre><code>export const submit = (order, customer, gateway, log) => {
+  if (!order) {
+    return null;
+  }
+
+  if (order.items.length === 0) {
+    return null;
+  }
+
+  if (!customer.isVerified) {
+    log("unverified");
+    return null;
+  }
+
+  if (order.total &gt; customer.creditLimit) {
+    log("over limit");
+    return null;
+  }
+
+  return gateway.charge(order);
+};</code></pre>
+  <p>Each rule is a flat block that states the condition and its consequence together. The happy path is the last line, and not nested.</p>
+
+  <p>Note the inverted conditions. A guard tests for the case you want to reject, so <code>if (order.items.length > 0)</code> becomes <code>if (order.items.length === 0)</code>.</p>
+
+
+  <h2>Guards over else</h2>
+
+  <pre><code>
+if (!user) {
+  return "anonymous";
+} else {
+  return user.name;
+}
+
+// the first condition has already exited, so the else is unnecessary
+if (!user) {
+  return "anonymous";
+}
+
+return user.name;</code></pre>
+  <p>An <code>if</code>/<code>else</code> asks you to hold both branches in your head until you find out which one you're in. A guard closes its case and stops mattering.</p>
+
+  <h2>Guard Clauses in Loops</h2>
+  <p>Apply the same for loops, where <code>continue</code> is the guard:</p>
+  <pre><code>export const activeEmails = (users) => {
+  const result = [];
+
+  for (const user of users) {
+    if (!user.isActive) {
+      continue;
+    }
+
+    if (!user.email) {
+      continue;
+    }
+
+    result.push(user.email);
+  }
+
+  return result;
+};</code></pre>
+  <p>Guards also give you somewhere obvious to put comments describing why a condition is bad and potentially also <code>throw</code>. Every backend developer will have been told to validate their inputs, we should do the same. </p>
+  <nav class="pager">
+    <a href="/core-javascript/09-exports-and-barrel-patterns.html">&larr; Exports and Barrel Patterns</a>
+    <span class="empty">&nbsp;</span>
+  </nav>
+</body>
+</html>
