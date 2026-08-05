@@ -23,7 +23,7 @@
   <p class="crumb">React &middot; 6 of 7</p>
   <h1>useRef</h1>
 
-  <p><code>useRef</code> is for keeping references to things that exist outside of the React lifecycle.  <code>useRef</code> returns a object that survives re-renders <b><i>but not unmounts.</i></b></p>  
+  <p><code>useRef</code> is for keeping references to things that exist outside of the React lifecycle.  <code>useRef</code> returns a object that survives re-renders <b><i>but not unmounts.</i></b> This is important in the case of <code>StrictMode</code>, which forces components to re-mount in dev builds.</p>  
   
   <p>Writing to <code>ref.current</code> does not trigger a render, and React never reads it.</p>
 
