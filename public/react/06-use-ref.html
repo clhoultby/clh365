@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>useRef</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">React &middot; 6 of 7</p>
+  <h1>useRef</h1>
+
+  <p><code>useRef</code> is for keeping references to things that exist outside of the React lifecycle.  <code>useRef</code> returns a object that survives re-renders <b><i>but not unmounts.</i></b></p>  
+  
+  <p>Writing to <code>ref.current</code> does not trigger a render, and React never reads it.</p>
+
+  <p>It is for:</p>
+
+  <ul>
+    <li>Keeping references to DOM nodes</li>
+    <li>handing the raw HTML element to non-React code</li>
+    <li>browser native things such as timers and subscription handlers you need to dispose later</li>
+  </ul>
+
+  <p>It is not for:</p>
+
+  <ul>
+    <li>anything the component renders — writing to a ref won't update the UI</li>
+    <li>Caching values from props and state</li>
+    <li>reading or writing during render — a ref is only safe in handlers and useEffects</li>
+  </ul>
+
+  <pre><code>// yes
+inputRef.current.focus();
+inputRef.current.scrollTo(0, 0);
+legacyFrameworkComponent.attach(inputRef.current);
+timeSinceLastPollRef.current = setTimeout(search, 300);
+
+// no
+countRef.current += 1;                                      // nothing re-renders
+isOpenRef.current = true;                                   // nothing re-renders
+totalRef.current = items.length - selectedItems.length;     // derive it during render
+formattedStringRef.current = format(props.value);           // written during render</code></pre>
+
+
+
+  <h2>Example - DOM element access</h2>
+  <p>Pass the ref to a host element's <code>ref</code> attribute and React writes the node into <code>current</code> when it commits.</p>
+
+  <pre><code>import { useRef } from "react";
+
+const SearchField = () =&gt; {
+  const inputRef = useRef(null);
+
+  const clear = () =&gt; {
+    inputRef.current.value = "";
+    inputRef.current.focus();
+  };
+
+  return (
+    &lt;&gt;
+      &lt;input ref={inputRef} type="search" /&gt;
+      &lt;button onClick={clear}&gt;Clear&lt;/button&gt;
+    &lt;/&gt;
+  );
+};</code></pre>
+
+  <p><code>current</code> is <code>null</code> until the element is mounted, so read it from event handlers or effects — never during render.</p>
+
+  <p>This is for things the DOM owns and React has no prop for: focus, scroll position, and calling into a non-React framework. Anything required for the rendered output should stay in state.</p>
+
+  <h2>Holding a Timeout id</h2>
+
+  <pre><code>import { useEffect, useRef } from "react";
+
+const SearchField = ({ onSearch }) =&gt; {
+  const timeoutRef = useRef(null);
+
+  useEffect(() =&gt; {
+    return () =&gt; {
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const handleChange = (event) =&gt; {
+    const { value } = event.target;
+
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() =&gt; {
+      onSearch(value);
+    }, 300);
+  };
+
+  return &lt;input type="search" onChange={handleChange} /&gt;;
+};</code></pre>
+
+  <p>The empty effect exists only for its cleanup — unmounting mid-debounce would otherwise fire <code>onSearch</code> against a component that is gone.</p>
+
+  <p>A timeout started inside an effect instead of a handler needs no ref — see <a href="/react/07-timers-in-effects.html">Timers in useEffect</a>.</p>
+
+  <nav class="pager">
+    <a href="/react/05-error-boundaries.html">&larr; Error Boundaries</a>
+    <a href="/react/07-timers-in-effects.html">Timers in useEffect &rarr;</a>
+  </nav>
+</body>
+</html>

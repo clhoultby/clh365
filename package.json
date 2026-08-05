@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "node build-index.js --watch & wrangler dev",
     "deploy": "wrangler deploy",
     "build-index": "node build-index.js"
   },

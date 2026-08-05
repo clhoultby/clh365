@@ -69,6 +69,14 @@ export const paths = [
       {
         "path": "react/05-error-boundaries.html",
         "title": "Error Boundaries"
+      },
+      {
+        "path": "react/06-use-ref.html",
+        "title": "useRef"
+      },
+      {
+        "path": "react/07-timers-in-effects.html",
+        "title": "Timers in useEffect"
       }
     ]
   }
