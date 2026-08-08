@@ -48,7 +48,7 @@ console.log("2"); // runs while load() is suspended</code></pre>
 
   <h2>Where not to await</h2>
   <p>Array callbacks aren't promise-aware. <code>forEach</code> ignores the promise its callback returns, so the loop finishes before any of the work does:</p>
-  <pre><code>// no — returns immediately, errors are lost
+  <pre><code>// no — this doesn't await each item, it returns immediately
 users.forEach(async (user) => {
   await save(user);
 });
@@ -61,7 +61,6 @@ for (const user of users) {
   await save(user);
 }</code></pre>
 
-  <p>Async functions are still just functions returning values, so the module patterns hold: export them by name, keep them pure where you can, pass their dependencies in.</p>
 
   <nav class="pager">
     <a href="/promises/01-promises.html">&larr; Promises Are Values</a>
