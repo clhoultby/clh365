@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Errors and Rejection</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Promises &middot; 4 of 6</p>
+  <h1>Errors and Rejection</h1>
+
+  <p>A rejection is a value the promise is holding, not an exception in flight. It only becomes an exception at the point you <code>await</code> it — which is why an unawaited call sails straight past your <code>try</code>.</p>
+
+  <h2>fetch does not reject on 404</h2>
+  <pre><code>export const fetchUser = async (id) => {
+  const res = await fetch(`/api/users/${id}`);
+
+  if (!res.ok) {
+    throw new Error(`User ${id} request failed: ${res.status}`);
+  }
+
+  return res.json();
+};</code></pre>
+  <p><code>fetch</code> rejects for network failures only. A 500 is a perfectly successful HTTP exchange as far as the promise is concerned, so the status check is yours to write — a guard clause at the top of the happy path.</p>
+
+  <h2>Catch where you can do something</h2>
+  <pre><code>// no — every caller now has to guess whether undefined means "failed" or "no user"
+export const fetchUser = async (id) => {
+  try {
+    const res = await fetch(`/api/users/${id}`);
+    return res.json();
+  } catch (error) {
+    log(error);
+  }
+};</code></pre>
+  <p>A <code>catch</code> that logs and returns nothing converts a loud failure into a quiet wrong answer. Let it propagate and handle it where there's a decision to make — a UI that can show a retry, a queue that can back off. If you catch to add context, re-throw:</p>
+  <pre><code>try {
+  return await fetchUser(id);
+} catch (error) {
+  throw new Error(`Loading user ${id} failed`, { cause: error });
+}</code></pre>
+  <p>Note <code>return await</code> here. Without the <code>await</code> the function returns the promise and unwinds before it rejects, so the <code>catch</code> never sees it. It's the one place the "redundant" await matters.</p>
+
+  <h2>finally runs either way</h2>
+  <pre><code>export const submit = async (order) => {
+  setBusy(true);
+
+  try {
+    return await postOrder(order);
+  } finally {
+    setBusy(false);
+  }
+};</code></pre>
+  <p>No <code>catch</code>, so the rejection still reaches the caller; the flag gets cleared on both paths. <code>.finally()</code> on a chain behaves the same and passes the value or reason through untouched.</p>
+
+  <h2>Unhandled rejections</h2>
+  <pre><code>// nothing observes this promise; the rejection surfaces as a global error
+saveDraft(doc);
+
+// yes — an explicit decision to ignore failure
+saveDraft(doc).catch((error) => {
+  log("draft save failed", error);
+});</code></pre>
+  <p>Fire-and-forget is legitimate for things like telemetry, but attach the <code>catch</code> so it's fire-and-forget on purpose rather than by omission.</p>
+
+  <nav class="pager">
+    <a href="/promises/03-work-in-parallel.html">&larr; Work in Parallel</a>
+    <a href="/promises/05-singleton-promise.html">The Singleton Promise &rarr;</a>
+  </nav>
+</body>
+</html>

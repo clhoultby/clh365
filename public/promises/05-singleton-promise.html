@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Singleton Promise</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Promises &middot; 5 of 6</p>
+  <h1>The Singleton Promise</h1>
+
+  <p>Three components mount at once and each one asks for the config. That's three requests for the same data, and the last response to arrive wins.</p>
+
+  <h2>Caching the result is too late</h2>
+  <pre><code>let config = null;
+
+export const getConfig = async () => {
+  if (config) {
+    return config;
+  }
+
+  const res = await fetch("/api/config");
+  config = await res.json();
+
+  return config;
+};</code></pre>
+  <p>The cache is only populated after the response lands. Every caller that arrives while the first request is still in flight sees <code>config</code> as <code>null</code> and starts its own.</p>
+
+  <p>Closing that window with a <code>loading</code> flag means somewhere to park the callers who arrive during it, and something to notify them when the data lands — a queue, a flag and a result, all of which have to agree. A promise is that machinery already.</p>
+
+  <h2>Cache the promise instead</h2>
+  <pre><code>// config.js
+let request = null;
+
+export const getConfig = () => {
+  if (!request) {
+    request = fetch("/api/config").then((res) => res.json());
+  }
+
+  return request;
+};</code></pre>
+  <p>The first caller creates the promise; everyone after that gets the same one. A promise that has already settled resolves immediately, so the same line covers "still loading" and "loaded ages ago" without a flag to distinguish them.</p>
+
+  <pre><code>// three components, three calls, one network request
+const [header, sidebar, footer] = await Promise.all([
+  getConfig(),
+  getConfig(),
+  getConfig(),
+]);</code></pre>
+
+  <p>This works because module state is created once per module, and because the assignment happens before any <code>await</code> — a second caller can't slip in and start its own fetch while the first is suspended.</p>
+
+  <h2>Failure has to clear the cache</h2>
+  <p>A rejected promise stays rejected. Cache it and every future caller gets the same failure, forever:</p>
+  <pre><code>let request = null;
+
+export const getConfig = () => {
+  if (!request) {
+    request = fetch("/api/config")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Config request failed: ${res.status}`);
+        }
+
+        return res.json();
+      })
+      .catch((error) => {
+        request = null; // let the next caller try again
+        throw error;
+      });
+  }
+
+  return request;
+};</code></pre>
+  <p>Note the <code>catch</code> re-throws. Clearing the cache is a side effect, not a recovery — swallowing the error here would hand every caller <code>undefined</code>.</p>
+
+  <h2>One promise per key</h2>
+  <p>Same idea for a function that takes an argument, with a <code>Map</code> in place of the single variable:</p>
+  <pre><code>const requests = new Map();
+
+export const getUser = (id) => {
+  if (!requests.has(id)) {
+    const request = fetch(`/api/users/${id}`)
+      .then((res) => res.json())
+      .catch((error) => {
+        requests.delete(id);
+        throw error;
+      });
+
+    requests.set(id, request);
+  }
+
+  return requests.get(id);
+};</code></pre>
+
+  <p>The cache never expires, which is the point for config or feature flags and wrong for anything that changes. Export a way to drop it — <code>export const refresh = () => { request = null; };</code> — and you have the whole of a small data layer.</p>
+
+  <nav class="pager">
+    <a href="/promises/04-errors-and-rejection.html">&larr; Errors and Rejection</a>
+    <a href="/promises/06-cancellation.html">Cancellation &rarr;</a>
+  </nav>
+</body>
+</html>

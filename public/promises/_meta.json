@@ -1,0 +1,5 @@
+{
+  "title": "Promises",
+  "description": "Promises as values you can hold, share and cache — from await to AbortController.",
+  "order": 3
+}

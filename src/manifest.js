@@ -83,5 +83,37 @@ export const paths = [
         "title": "Timers in useEffect"
       }
     ]
+  },
+  {
+    "slug": "promises",
+    "title": "Promises",
+    "description": "Promises as values you can hold, share and cache — from await to AbortController.",
+    "order": 3,
+    "lessons": [
+      {
+        "path": "promises/01-promises.html",
+        "title": "Promises"
+      },
+      {
+        "path": "promises/02-async-await.html",
+        "title": "Async and Await"
+      },
+      {
+        "path": "promises/03-work-in-parallel.html",
+        "title": "Work in Parallel"
+      },
+      {
+        "path": "promises/04-errors-and-rejection.html",
+        "title": "Errors and Rejection"
+      },
+      {
+        "path": "promises/05-singleton-promise.html",
+        "title": "The Singleton Promise"
+      },
+      {
+        "path": "promises/06-cancellation.html",
+        "title": "Cancellation"
+      }
+    ]
   }
 ];

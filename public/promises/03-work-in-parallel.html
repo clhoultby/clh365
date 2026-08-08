@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work in Parallel</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Promises &middot; 3 of 6</p>
+  <h1>Work in Parallel</h1>
+
+  <p>Awaiting on the line that starts the work is the most common performance bug in async code, and it's invisible — the code is correct, just slower than it needs to be.</p>
+
+  <h2>The waterfall</h2>
+  <pre><code>// three round trips, one after another
+const user = await fetch("/api/user").then((res) => res.json());
+const config = await fetch("/api/config").then((res) => res.json());
+const flags = await fetch("/api/flags").then((res) => res.json());</code></pre>
+  <p>None of these depend on each other, but the second request doesn't start until the first has come back. Total time is the sum.</p>
+
+  <h2>Start first, await later</h2>
+  <pre><code>const [user, config, flags] = await Promise.all([
+  fetch("/api/user").then((res) => res.json()),
+  fetch("/api/config").then((res) => res.json()),
+  fetch("/api/flags").then((res) => res.json()),
+]);</code></pre>
+  <p>All three are in flight before the first <code>await</code>. Total time is the slowest one. <code>Promise.all</code> keeps the order of the input array regardless of which finishes first.</p>
+
+  <p>Sequential awaits are correct when the second call genuinely needs the first result. If it doesn't, it belongs in the array.</p>
+
+  <h2>all rejects on the first failure</h2>
+  <pre><code>// one bad response and you get nothing, even if the others succeeded
+const results = await Promise.all(ids.map((id) => fetchUser(id)));</code></pre>
+  <p>That's what you want for data a screen can't render without. When a partial result is still useful, use <code>allSettled</code>:</p>
+  <pre><code>const settled = await Promise.allSettled(ids.map((id) => fetchUser(id)));
+
+const users = [];
+
+for (const result of settled) {
+  if (result.status === "rejected") {
+    log(result.reason);
+    continue;
+  }
+
+  users.push(result.value);
+}</code></pre>
+  <p><code>allSettled</code> never rejects. Every entry is <code>{ status: "fulfilled", value }</code> or <code>{ status: "rejected", reason }</code>, so the failures are data you handle rather than an exception that skips the rest.</p>
+
+  <h2>race and any</h2>
+  <pre><code>// first to settle wins, including a rejection — the timeout pattern
+const data = await Promise.race([
+  fetchUser(id),
+  rejectAfter(5000, new Error("Timed out")),
+]);
+
+// first to succeed wins; rejects only if all of them fail
+const mirror = await Promise.any([fetchFrom(primary), fetchFrom(backup)]);</code></pre>
+  <p>Neither cancels the losers — they keep running, and their results are simply ignored. Stopping the work needs an <code>AbortController</code> (lesson 6).</p>
+
+  <nav class="pager">
+    <a href="/promises/02-async-await.html">&larr; Async and Await</a>
+    <a href="/promises/04-errors-and-rejection.html">Errors and Rejection &rarr;</a>
+  </nav>
+</body>
+</html>

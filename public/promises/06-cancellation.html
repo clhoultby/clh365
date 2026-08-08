@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancellation</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Promises &middot; 6 of 6</p>
+  <h1>Cancellation</h1>
+
+  <p>A promise can't be cancelled. Once created it will settle, and whoever is awaiting it will be resumed. Cancellation is something you ask the underlying operation to do, and <code>AbortController</code> is the standard way to ask.</p>
+
+  <h2>One controller, one signal</h2>
+  <pre><code>const controller = new AbortController();
+
+const request = fetch("/api/search?q=cats", { signal: controller.signal });
+
+controller.abort(); // the request rejects with an AbortError</code></pre>
+  <p>The controller is the handle you keep; the signal is the read-only half you hand to the operation. <code>fetch</code> takes one, and so do <code>addEventListener</code>, <code>Request</code>, and most modern browser APIs.</p>
+
+  <h2>An abort is a rejection you expect</h2>
+  <pre><code>export const search = async (query, signal) => {
+  try {
+    const res = await fetch(`/api/search?q=${query}`, { signal });
+
+    if (!res.ok) {
+      throw new Error(`Search failed: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    if (error.name === "AbortError") {
+      return null;
+    }
+
+    throw error;
+  }
+};</code></pre>
+  <p>Aborting isn't a failure — you caused it. Filter it out before your error handling treats it as a broken backend and shows the user a message. Pass the signal in as a parameter rather than creating the controller inside; the caller is the one who knows when to stop.</p>
+
+  <h2>Superseded requests</h2>
+  <p>The usual case is a request that's still in flight when a newer one starts. Abort the old one so its late response can't overwrite the new one:</p>
+  <pre><code>let current = null;
+
+export const runSearch = (query) => {
+  if (current) {
+    current.abort();
+  }
+
+  current = new AbortController();
+
+  return search(query, current.signal);
+};</code></pre>
+  <p>Without this you're relying on the network to deliver responses in the order you sent them, which it does not promise.</p>
+
+  <h2>In an effect</h2>
+  <pre><code>useEffect(() => {
+  const controller = new AbortController();
+
+  search(query, controller.signal).then(setResults);
+
+  return () => {
+    controller.abort();
+  };
+}, [query]);</code></pre>
+  <p>The cleanup runs before the effect re-runs and on unmount, so a component that unmounts mid-request stops the work and never sets state afterwards.</p>
+
+  <h2>Cancellation and cached promises</h2>
+  <p>The two patterns don't mix. A promise shared by several callers isn't any one caller's to abort — the previous lesson's cache would hand out a promise someone else has already cancelled. Cache the requests nobody cancels (config, flags, reference data) and abort the ones nobody shares (searches, per-view loads).</p>
+
+  <nav class="pager">
+    <a href="/promises/05-singleton-promise.html">&larr; The Singleton Promise</a>
+    <span class="empty">&nbsp;</span>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Async and Await</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  p.crumb { margin-top: 0; font-size: .85rem; color: #888; }
+  a.back { font-size: .9rem; }
+  pre { background: rgba(128,128,128,.12); padding: .9rem 1rem; border-radius: 6px; overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  :not(pre) > code { background: rgba(128,128,128,.15); padding: .1rem .35rem; border-radius: 4px; }
+  nav.pager { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(128,128,128,.2); font-size: .9rem; }
+  nav.pager span.empty { color: #888; }
+</style>
+</head>
+<body>
+  <p><a class="back" href="/">&larr; All material</a></p>
+  <p class="crumb">Promises &middot; 2 of 6</p>
+  <h1>Async and Await</h1>
+
+  <p><code>await</code> unwraps a promise. <code>async</code> wraps a return value back up in one. Nothing else about the function changes.</p>
+
+  <h2>Every async function returns a promise</h2>
+  <pre><code>export const getUserName = async (id) => {
+  const res = await fetch(`/api/users/${id}`);
+  const user = await res.json();
+
+  return user.name; // caller receives Promise&lt;string&gt;
+};</code></pre>
+  <p>A <code>throw</code> inside becomes a rejection, and a plain value becomes a fulfilled promise. Marking a function <code>async</code> is therefore a change to its signature, and it propagates: the caller has to await it too.</p>
+
+  <h2>Await suspends the caller, not the program</h2>
+  <pre><code>const load = async () => {
+  console.log("1");
+  const res = await fetch("/api/config"); // load() pauses here
+  console.log("3");
+  return res.json();
+};
+
+load();
+console.log("2"); // runs while load() is suspended</code></pre>
+  <p>Nothing is blocked. The rest of <code>load</code> is scheduled to resume when the promise settles, and the caller carries straight on.</p>
+
+  <h2>Where not to await</h2>
+  <p>Array callbacks aren't promise-aware. <code>forEach</code> ignores the promise its callback returns, so the loop finishes before any of the work does:</p>
+  <pre><code>// no — returns immediately, errors are lost
+users.forEach(async (user) => {
+  await save(user);
+});
+
+// yes — map produces promises you can wait on
+await Promise.all(users.map((user) => save(user)));
+
+// yes — when the order matters and they must run one at a time
+for (const user of users) {
+  await save(user);
+}</code></pre>
+
+  <p>Async functions are still just functions returning values, so the module patterns hold: export them by name, keep them pure where you can, pass their dependencies in.</p>
+
+  <nav class="pager">
+    <a href="/promises/01-promises.html">&larr; Promises Are Values</a>
+    <a href="/promises/03-work-in-parallel.html">Work in Parallel &rarr;</a>
+  </nav>
+</body>
+</html>
